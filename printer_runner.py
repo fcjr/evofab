@@ -12,8 +12,8 @@ class Runner:
 
         pygame.init()
         grid = GridWorld(40, 40, 16)
-        width = grid.width * grid.gridsize
-        height = grid.height * grid.gridsize
+        width = grid.width() * grid.gridsize()
+        height = grid.height() * grid.gridsize()
         self.grid = grid
         self.window = pygame.display.set_mode((width, height))
         self.printer = VirtualPrinter(10, 10, 9, 1, pygame.color.Color("darkorange"), grid)
