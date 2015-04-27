@@ -5,7 +5,7 @@ from vector import Vector
 
 class Runner:
 
-    movement_constant = 10
+    movement_constant = 3
 
     def __init__(self):
         """ Set pygame stuff up for running the simulation."""
