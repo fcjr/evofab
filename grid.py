@@ -9,11 +9,11 @@ class Grid:
             self.gridsize = scale
             self.grid = [[self.empty for x in xrange(self.width)] for x in xrange(self.height)]
 
-    def val_at(self, row, col):
-        return self.grid[row][col]
+    def val_at(self, x, y):
+        return self.grid[x][y]
 
-    def set_loc_val(self, row, col, val):
-        self.grid[col][row] = val
+    def set_loc_val(self, x, y, val):
+        self.grid[x][y] = val
 
     def inbounds(self,p):
         (x,y) = p

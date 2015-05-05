@@ -22,7 +22,7 @@ class GridWorld:
                         for col in xrange(0,self.width()):
                                 xcoord = col * self.gridsize()
                                 ycoord = row * self.gridsize()
-                                val_at_loc = self.grid.val_at(row, col)
+                                val_at_loc = self.grid.val_at(col, row)
                                 color = self.colors[val_at_loc]
 
                                 #actually draw the rectangle
