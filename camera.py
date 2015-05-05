@@ -9,6 +9,42 @@ class Camera:
         self.width = grid.width
         self.size = size
 
+    def get_ratio_filled_in_view(self, grid_cell):
+        in_view = self.get_cells_in_view(grid_cell)
+        in_view = [(int(a), int(b)) for a, b in in_view]
+        pixel_cell = self.get_pixel_coords(grid_cell)
+        if len(in_view) == 4:
+            q0_weight = self.get_weight_factor_for_one_of_four(in_view[0])
+            q1_weight = self.get_weight_factor_for_one_of_four(in_view[1])
+            q2_weight = self.get_weight_factor_for_one_of_four(in_view[2])
+            q3_weight = self.get_weight_factor_for_one_of_four(in_view[3])
+            percentage = (
+                    q0_weight * self.grid.val_at(x(in_view[0]), y(in_view[0])) +
+                    q1_weight * self.grid.val_at(x(in_view[1]), y(in_view[1])) +
+                    q2_weight * self.grid.val_at(x(in_view[2]), y(in_view[2])) +
+                    q3_weight * self.grid.val_at(x(in_view[3]), y(in_view[3]))
+                    )
+            return percentage
+        elif len(in_view) == 2:
+            if same_x(in_view[0], in_view[1]):
+                factor1 = (self.width - (y(self.get_pixel_coords(in_view[0])) % self.width)) / self.width
+                factor2 = (self.width - (y(self.get_pixel_coords(in_view[1])) % self.width)) / self.width
+            else:
+                factor1 = (self.width - (x(self.get_pixel_coords(in_view[0])) % self.width)) / self.width
+                factor2 = (self.width - (x(self.get_pixel_coords(in_view[1])) % self.width)) / self.width
+            percentage = factor1 * self.grid.val_at(x(in_view[0]), y(in_view[0])) + factor2 * self.grid.val_at(x(in_view[1]), y(in_view[1]))
+            return percentage
+        elif len(in_view) == 1:
+            return self.grid.val_at(in_view[0])
+        else:
+            assert True == False #explode if there's an unreasonable number of cells in view
+
+    def get_weight_factor_for_one_of_four(self, cell_in_view):
+        quada = (self.width - (x(self.get_pixel_coords(cell_in_view))) % self.width)
+        quadb = (self.width - (y(self.get_pixel_coords(cell_in_view))) % self.width)
+        weight = (quada * quadb) / (self.width * self.width) #weight based on the area of cell in view/area of the cell
+        return weight
+    
     def get_cells_in_view(self, camera_cell):
         """ will return a list of tuples containing the x,y grid coordinates of
         the cells which are overlapped by the given camera cell """
@@ -51,3 +87,9 @@ def x(collection):
 
 def y(collection):
     return collection[1]
+
+def same_x(pair1, pair2):
+    return x(pair1) == x(pair2)
+
+def same_y(pair1, pair2):
+    return y(pair1) == y(pair2)
