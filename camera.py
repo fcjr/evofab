@@ -13,8 +13,6 @@ class Camera:
         """ will return a list of tuples containing the x,y grid coordinates of
         the cells which are overlapped by the given camera cell """
 
-        #TODO: going to need to deal with edge conditions (literally the edges of the grid)
-
         in_view = []
 
         cam_cell_x, cam_cell_y = self.get_pixel_coords(camera_cell)
