@@ -4,7 +4,7 @@ from camera import Camera
 import pygame
 
 #camera tester
-the_grid = GridWorld(10, 10, 10)
+the_grid = GridWorld(40, 40, 10)
 the_grid.grid.set_loc_val(2, 1, 1)
 printer = VirtualPrinter(20, 20, 1, 0, pygame.color.Color("darkorange"), the_grid)
 camera = Camera(printer, the_grid.grid, 10)

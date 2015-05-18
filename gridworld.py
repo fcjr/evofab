@@ -28,6 +28,10 @@ class GridWorld:
                                 #actually draw the rectangle
                                 dimen_of_rect = self.gridsize()
                                 pygame.draw.rect(window, color, pygame.Rect(xcoord,ycoord,dimen_of_rect, dimen_of_rect))
+                for row in xrange(0, self.width()):
+                    pygame.draw.line(window, pygame.color.Color("black"), (0, self.grid.gridsize * row), (self.grid.gridsize * self.width(), self.grid.gridsize * row))
+                for col in xrange(0, self.width()):
+                    pygame.draw.line(window, pygame.color.Color("black"), (self.grid.gridsize * col, 0), (self.grid.gridsize * col, self.grid.gridsize * self.width()))
 
         def inbounds(self,p):
           (x,y) = p
