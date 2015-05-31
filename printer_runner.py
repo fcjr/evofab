@@ -2,7 +2,6 @@ import pygame
 from gridworld import GridWorld
 from virtualprinter import VirtualPrinter
 from vector import Vector
-from camera import Camera
 
 class Runner:
 
@@ -12,15 +11,13 @@ class Runner:
         """ Set pygame stuff up for running the simulation."""
 
         pygame.init()
-        grid = GridWorld(10, 10, 10)
+        grid = GridWorld(20, 20, 30)
         width = grid.width() * grid.gridsize()
         height = grid.height() * grid.gridsize()
         self.grid = grid
         self.window = pygame.display.set_mode((width, height))
         self.printer = VirtualPrinter(10, 10, 9, 1, pygame.color.Color("darkorange"), grid)
-        self.printer.position = Vector(100, 100)
         self.grid.draw(self.window)
-        self.camera = Camera(self.printer, self.grid.grid)
 
     def run(self):
         self.printer.setPenDown()
@@ -46,7 +43,6 @@ class Runner:
     def redraw(self):
         self.grid.draw(self.window)
         self.printer.draw(self.window)
-        self.camera.draw(self.window)
 
 runner = Runner()
 runner.run()
