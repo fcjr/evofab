@@ -25,4 +25,4 @@ class Grid:
             xval = int(x/self.gridsize)
             yval = int(y/self.gridsize)
             #print "endpoint is :",x,y, "(",xval,",",yval,")"
-            return (xval,yval)
+            return xval,yval

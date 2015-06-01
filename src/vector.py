@@ -19,6 +19,15 @@ class Vector:
     def __str__ (self):
         return "["+str(self.x)+", "+str(self.y)+"]"
 
+    def same_plus(self, num):
+        return Vector(self.x + num, self.y + num)
+
+    def same_minus(self, num):
+        return Vector(self.x - num, self.y - num)
+
+    def same_times(self, num):
+        return Vector(self.x * num, self.y * num)
+
     def plus (self, v2):
         return Vector(self.x + v2.x, self.y + v2.y)
 
