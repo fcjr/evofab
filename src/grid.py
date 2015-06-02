@@ -12,6 +12,9 @@ class Grid:
     def val_at(self, x, y):
         return self.grid[x][y]
 
+    def val_at_vector(self, vector):
+        return self.grid[vector.x][vector.y]
+
     def set_loc_val(self, x, y, val):
         self.grid[x][y] = val
 

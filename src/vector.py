@@ -69,4 +69,5 @@ class Vector:
         n = self.normalize()
         return Vector(n.y,-n.x)
 
-        
+    def get_tuple(self):
+        return self.x, self.y

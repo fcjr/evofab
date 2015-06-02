@@ -53,3 +53,20 @@ class TestCamera(unittest.TestCase):
         self.printer.position = Vector(12, 12)
         self.assertEqual(self.camera.num_cells_in_view(Vector(3, 3)), 4)
         #blue cell
+    
+    def test_region_aligned(self):
+        self.printer.position = Vector(15, 15)
+        self.grid.set_loc_val(1, 1, 3)
+        self.assertEqual(self.camera.percent_in_view(Vector(1, 1)), 3)
+
+    def test_region_over_two_cells_horizontally_aligned(self):
+        self.printer.position = Vector(15, 20)
+        self.grid.set_loc_val(1, 1, 1)
+        self.grid.set_loc_val(1, 2, 0)
+        self.assertEqual(self.camera.percent_in_view(Vector(1, 1)), 0.5)
+
+    def test_region_over_two_cells_vertically_aligned(self):
+        self.printer.position = Vector(20, 15)
+        self.grid.set_loc_val(1, 1, 1)
+        self.grid.set_loc_val(2, 1, 0)
+        self.assertEqual(self.camera.percent_in_view(Vector(1, 1)), 0.5)
