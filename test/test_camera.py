@@ -70,3 +70,15 @@ class TestCamera(unittest.TestCase):
         self.grid.set_loc_val(1, 1, 1)
         self.grid.set_loc_val(2, 1, 0)
         self.assertEqual(self.camera.percent_in_view(Vector(1, 1)), 0.5)
+        self.printer.position = Vector(22, 15)
+        self.grid.set_loc_val(1, 1, 1)
+        self.grid.set_loc_val(2, 1, 0)
+        self.assertEqual(self.camera.percent_in_view(Vector(1, 1)), 0.7)
+
+    def test_region_over_four_cells(self):
+        self.printer.position = Vector(20, 20)
+        self.grid.set_loc_val(1, 1, 1)
+        self.grid.set_loc_val(2, 1, 0)
+        self.grid.set_loc_val(1, 2, 0)
+        self.grid.set_loc_val(2, 2, 0)
+        self.assertEqual(self.camera.percent_in_view(Vector(1, 1)), 0.25)

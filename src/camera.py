@@ -83,4 +83,50 @@ class Camera:
                 percentage_filled = weighted_left_val + weighted_right_val
                 return percentage_filled
             else:
-                return 4
+                topleft_factor = self.get_4_cell_topleft_factor(topleft_cell_corner)
+                topright_factor = self.get_4_cell_topright_factor(topright_cell_corner)
+                bottomleft_factor = self.get_4_cell_bottomleft_factor(bottomleft_cell_corner)
+                bottomright_factor = self.get_4_cell_bottomright_factor(bottomright_cell_corner)
+
+                topleft_val = self.world_grid.val_at(*self.world_grid.find_closest_gridloc(topleft_cell_corner.get_tuple()))
+                topright_val = self.world_grid.val_at(*self.world_grid.find_closest_gridloc(topright_cell_corner.get_tuple()))
+                bottomleft_val = self.world_grid.val_at(*self.world_grid.find_closest_gridloc(bottomleft_cell_corner.get_tuple()))
+                bottomright_val = self.world_grid.val_at(*self.world_grid.find_closest_gridloc(bottomright_cell_corner.get_tuple()))
+
+                total_val = (
+                        (topleft_val * topleft_factor)
+                        + (topright_val * topright_factor)
+                        + (bottomleft_val * bottomleft_factor)
+                        + (bottomright_val * bottomright_factor)
+                        )
+                return total_val
+
+    def get_4_cell_topleft_factor(self, topleft_cell_corner):
+        distance_into_cell_x = topleft_cell_corner.x % self.cell_width
+        xfactor = self.cell_width - distance_into_cell_x
+        distance_into_cell_y = topleft_cell_corner.y % self.cell_width
+        yfactor = self.cell_width - distance_into_cell_y
+        topleft_factor = (xfactor * yfactor) / (self.cell_width * self.cell_width)
+        return topleft_factor
+
+    def get_4_cell_topright_factor(self, topright_cell_corner):
+        xfactor = topright_cell_corner.x % self.cell_width
+        distance_into_cell_y = topright_cell_corner.y % self.cell_width
+        yfactor = self.cell_width - distance_into_cell_y
+        topright_factor = (xfactor * yfactor) / (self.cell_width * self.cell_width)
+        return topright_factor
+
+    def get_4_cell_bottomleft_factor(self, bottomleft_cell_corner):
+        distance_into_cell_x = bottomleft_cell_corner.x % self.cell_width
+        xfactor = self.cell_width - distance_into_cell_x
+        yfactor = bottomleft_cell_corner.y % self.cell_width
+        bottomleft_factor = (xfactor * yfactor) / (self.cell_width * self.cell_width)
+        return bottomleft_factor
+
+    def get_4_cell_bottomright_factor(self, bottomright_cell_corner):
+        xfactor = bottomright_cell_corner.x % self.cell_width
+        yfactor = bottomright_cell_corner.y % self.cell_width
+        bottomright_factor = (xfactor * yfactor) / (self.cell_width * self.cell_width)
+        return bottomright_factor
+
+        
