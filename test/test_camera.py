@@ -1,3 +1,4 @@
+
 import unittest
 from vector import Vector
 from camera import Camera
@@ -14,7 +15,7 @@ class TestCamera(unittest.TestCase):
         self.camera = Camera(self.grid, self.printer, 3)
 
     def test_camera_has_correct_values_at_init(self):
-        self.assertIs(self.camera.world_grid, self.gridworld.grid)
+        self.assertIs(self.camera.grid, self.gridworld.grid)
         self.assertIs(self.camera.printer, self.printer)
         self.assertEqual(self.camera.n, 3)
         self.assertEqual(self.camera.cell_width, self.gridworld.gridsize())

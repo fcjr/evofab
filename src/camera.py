@@ -1,6 +1,21 @@
 from grid import Grid
 from vector import Vector
 from virtualprinter import VirtualPrinter
+import pygame
+
+class VisualCamera:
+
+    def __init__(self, visual_grid, printer, n):
+        self.color = pygame.color.Color("black")
+        self.camera = Camera(visual_grid.grid, printer, n)
+
+    def draw(self, window):
+        topleft = self.camera.get_top_left_camera_coords()
+        for row in xrange(self.camera.n + 1):
+                #xcoord = (col * self.camera.grid.gridsize) + self.camera.get_top_left_camera_coords().x
+                pygame.draw.line(window, pygame.color.Color("black"), (topleft.x, topleft.y + self.camera.gridsize() * row), (topleft.x + self.camera.gridsize() * self.camera.n, topleft.y + self.camera.gridsize() * row))
+        for col in xrange(self.camera.n + 1):
+                pygame.draw.line(window, pygame.color.Color("black"), (topleft.x + self.camera.gridsize() * col, topleft.y), (topleft.x + self.camera.gridsize() * col, topleft.y + self.camera.gridsize() * self.camera.n))
 
 class Camera:
     """ Simulates a camera attached to the print head of the printer.
@@ -11,14 +26,17 @@ class Camera:
     camera regions are not in valid world cells. That's dumb and will
     break processing a lot. Make sure everythings inside the world grid"""
 
-    def __init__(self, world_grid, printer, n):
+    def __init__(self, grid, printer, n):
         """constructs a Camera based on the given world grid,
         printer, and n (it is an n x n grid camera)"""
 
-        self.world_grid = world_grid
+        self.grid = grid
         self.printer = printer
         self.n = n
-        self.cell_width = world_grid.gridsize
+        self.cell_width = grid.gridsize
+
+    def gridsize(self):
+        return self.grid.gridsize
 
     def num_cells_in_view(self, gridcell):
         """returns the number of cells in view of the given gridcell"""
@@ -31,7 +49,6 @@ class Camera:
         topright_cell_corner = top_left_camera_coords.plus(Vector(gridcell_pixel.x + self.cell_width, gridcell_pixel.y))
         bottomleft_cell_corner = top_left_camera_coords.plus(Vector(gridcell_pixel.x, gridcell_pixel.y + self.cell_width))
         bottomright_cell_corner = top_left_camera_coords.plus(Vector(gridcell_pixel.x + self.cell_width, gridcell_pixel.y + self.cell_width))
-
         if topleft_cell_corner.x % self.cell_width == 0:
             if topleft_cell_corner.y % self.cell_width == 0:
                 #then we are aligned with a cell
@@ -45,6 +62,11 @@ class Camera:
                 return 2
             else:
                 return 4
+
+    def get_top_left_camera_coords(self):
+        printer_position = self.printer.position
+        top_left_camera_coords = printer_position.same_minus((self.cell_width * self.n) / 2.0)
+        return top_left_camera_coords
 
     def percent_in_view(self, gridcell):
         printer_position = self.printer.position
@@ -60,13 +82,13 @@ class Camera:
             if topleft_cell_corner.y % self.cell_width == 0:
                 #then we are aligned with a cell
                 cell_coords = topleft_cell_corner.same_times(1.0/self.cell_width)
-                return self.world_grid.val_at(int(cell_coords.x), int(cell_coords.y))
+                return self.grid.val_at(int(cell_coords.x), int(cell_coords.y))
             else:
                 #then we are aligned on the x but not the y
                 factor_top = (topright_cell_corner.y % self.cell_width) / float(self.cell_width)
                 factor_bottom = self.cell_width - factor_top / float(self.cell_width)
-                top_val = self.world_grid.val_at(*self.world_grid.find_closest_gridloc(topleft_cell_corner.get_tuple()))
-                bottom_val = self.world_grid.val_at(*self.world_grid.find_closest_gridloc(bottomleft_cell_corner.get_tuple()))
+                top_val = self.grid.val_at(*self.grid.find_closest_gridloc(topleft_cell_corner.get_tuple()))
+                bottom_val = self.grid.val_at(*self.grid.find_closest_gridloc(bottomleft_cell_corner.get_tuple()))
                 weighted_top_val = factor_top * top_val
                 weighted_bottom_val = factor_bottom * bottom_val
                 percentage_filled = weighted_top_val + weighted_bottom_val
@@ -76,8 +98,8 @@ class Camera:
                 #then we are aligned on the y but not the x
                 factor_left = (topright_cell_corner.x % self.cell_width) / float(self.cell_width)
                 factor_right = self.cell_width - factor_left / float(self.cell_width)
-                left_val = self.world_grid.val_at(*self.world_grid.find_closest_gridloc(topleft_cell_corner.get_tuple()))
-                right_val = self.world_grid.val_at(*self.world_grid.find_closest_gridloc(topright_cell_corner.get_tuple()))
+                left_val = self.grid.val_at(*self.grid.find_closest_gridloc(topleft_cell_corner.get_tuple()))
+                right_val = self.grid.val_at(*self.grid.find_closest_gridloc(topright_cell_corner.get_tuple()))
                 weighted_left_val = factor_left * left_val
                 weighted_right_val = factor_right * right_val
                 percentage_filled = weighted_left_val + weighted_right_val
@@ -88,10 +110,10 @@ class Camera:
                 bottomleft_factor = self.get_4_cell_bottomleft_factor(bottomleft_cell_corner)
                 bottomright_factor = self.get_4_cell_bottomright_factor(bottomright_cell_corner)
 
-                topleft_val = self.world_grid.val_at(*self.world_grid.find_closest_gridloc(topleft_cell_corner.get_tuple()))
-                topright_val = self.world_grid.val_at(*self.world_grid.find_closest_gridloc(topright_cell_corner.get_tuple()))
-                bottomleft_val = self.world_grid.val_at(*self.world_grid.find_closest_gridloc(bottomleft_cell_corner.get_tuple()))
-                bottomright_val = self.world_grid.val_at(*self.world_grid.find_closest_gridloc(bottomright_cell_corner.get_tuple()))
+                topleft_val = self.grid.val_at(*self.grid.find_closest_gridloc(topleft_cell_corner.get_tuple()))
+                topright_val = self.grid.val_at(*self.grid.find_closest_gridloc(topright_cell_corner.get_tuple()))
+                bottomleft_val = self.grid.val_at(*self.grid.find_closest_gridloc(bottomleft_cell_corner.get_tuple()))
+                bottomright_val = self.grid.val_at(*self.grid.find_closest_gridloc(bottomright_cell_corner.get_tuple()))
 
                 total_val = (
                         (topleft_val * topleft_factor)
@@ -128,5 +150,3 @@ class Camera:
         yfactor = bottomright_cell_corner.y % self.cell_width
         bottomright_factor = (xfactor * yfactor) / (self.cell_width * self.cell_width)
         return bottomright_factor
-
-        

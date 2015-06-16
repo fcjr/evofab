@@ -1,6 +1,7 @@
 import pygame
 from gridworld import GridWorld
 from virtualprinter import VirtualPrinter
+from camera import VisualCamera
 from vector import Vector
 
 class Runner:
@@ -17,6 +18,7 @@ class Runner:
         self.grid = grid
         self.window = pygame.display.set_mode((width, height))
         self.printer = VirtualPrinter(10, 10, 9, 1, pygame.color.Color("darkorange"), grid)
+        self.camera = VisualCamera(self.grid, self.printer, 3)
         self.grid.draw(self.window)
 
     def run(self):
@@ -43,6 +45,7 @@ class Runner:
     def redraw(self):
         self.grid.draw(self.window)
         self.printer.draw(self.window)
+        self.camera.draw(self.window)
 
 runner = Runner()
 runner.run()
