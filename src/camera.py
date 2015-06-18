@@ -4,6 +4,7 @@ from virtualprinter import VirtualPrinter
 import pygame
 
 class VisualCamera:
+    """Visual wrapper on the camera class"""
 
     def __init__(self, visual_grid, printer, n):
         self.color = pygame.color.Color("black")

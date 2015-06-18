@@ -1,4 +1,5 @@
 class Grid:
+    """Operates as a grid with values"""
 
     empty = 0
     filled = 1

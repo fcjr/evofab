@@ -5,6 +5,7 @@ from camera import VisualCamera
 from vector import Vector
 
 class Runner:
+    """Runner for printer test"""
 
     movement_constant = 3
 
