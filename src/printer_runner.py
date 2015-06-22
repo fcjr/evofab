@@ -31,6 +31,27 @@ class Runner:
             self.redraw()
             pygame.display.update()
 
+    def run_auto(self):
+        printer = self.printer
+        printer.setPenDown()
+        printer.position = Vector(45, 45)
+        printer.v = Vector(500, 0)
+        while printer.position.x < ((self.grid.width() - 2) * self.grid.gridsize() - 15):
+            self.printer.simulate(1)
+            self.redraw()
+            pygame.display.update()
+        printer.v = Vector(0, 500)
+        while printer.position.y < ((self.grid.height() -2) * self.grid.gridsize() - 15):
+            self.printer.simulate(1)
+            self.redraw()
+            pygame.display.update()
+        printer.v = Vector(-500, 0)
+        while printer.position.x > ((2 * self.grid.gridsize()) + 15):
+            self.printer.simulate(1)
+            self.redraw()
+            pygame.display.update()
+        
+
     def act_on_key_input(self):
         pygame.event.get()
         keys = pygame.key.get_pressed()
@@ -49,4 +70,4 @@ class Runner:
         self.camera.draw(self.window)
 
 runner = Runner()
-runner.run()
+runner.run_auto()

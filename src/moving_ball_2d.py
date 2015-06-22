@@ -14,12 +14,9 @@ from vector import Vector
 
 class MovingBall :
 
-    position = Vector(0.0,0.0)
-
     r = 25
 
     #velocity vector
-    v = Vector(0.0, 0.0)
 
     speedlimit = Vector(500.0, 500.0) 
 
