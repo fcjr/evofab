@@ -57,7 +57,9 @@ class Runner:
         
 
     def act_on_key_input(self):
-        pygame.event.get()
+        for event in pygame.event.get(pygame.KEYUP):
+            if event.key == pygame.K_p:
+                self.print_all_camera_values()
         keys = pygame.key.get_pressed()
         #TODO: something something keyup -- John
         if keys[pygame.K_LEFT]:
@@ -68,8 +70,6 @@ class Runner:
             self.printer.v.y += self.movement_constant * -1
         if keys[pygame.K_DOWN]:
             self.printer.v.y += self.movement_constant
-        if keys[pygame.K_p]:
-            self.print_all_camera_values()
         if keys[pygame.K_SPACE]:
             self.printer.v = Vector(0, 0)
 
