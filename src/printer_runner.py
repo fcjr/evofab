@@ -55,6 +55,7 @@ class Runner:
     def act_on_key_input(self):
         pygame.event.get()
         keys = pygame.key.get_pressed()
+        #TODO: something something keyup -- John
         if keys[pygame.K_LEFT]:
             self.printer.v.x += self.movement_constant * -1
         if keys[pygame.K_RIGHT]:
@@ -63,6 +64,10 @@ class Runner:
             self.printer.v.y += self.movement_constant * -1
         if keys[pygame.K_DOWN]:
             self.printer.v.y += self.movement_constant
+        if keys[pygame.K_p]:
+            self.camera.camera.all_cell_values()
+        if keys[pygame.K_SPACE]:
+            self.printer.v = Vector(0, 0)
 
     def redraw(self):
         self.grid.draw(self.window)
@@ -70,4 +75,4 @@ class Runner:
         self.camera.draw(self.window)
 
 runner = Runner()
-runner.run_auto()
+runner.run()

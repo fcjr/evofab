@@ -69,6 +69,16 @@ class Camera:
         top_left_camera_coords = printer_position.same_minus((self.cell_width * self.n) / 2.0)
         return top_left_camera_coords
 
+    def all_cell_values(self):
+        for x in range(self.n):
+            outstring = ''
+            for y in range(self.n):
+                outstring += str(self.percent_in_view(Vector(x, y)))
+                outstring += ' '
+            print outstring
+        print '*' * 10
+                
+
     def percent_in_view(self, gridcell):
         printer_position = self.printer.position
         top_left_camera_coords = printer_position.same_minus((self.cell_width * self.n) / 2.0)
