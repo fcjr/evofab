@@ -6,10 +6,14 @@ from grid import Grid
 
 class GridWorld:
 
-        empty = 0
         filled = 1
+        both_empty = 0
+        need_fill = 1
+        both_full = 2
+        wrong_fill = 3
+
         #use terrain type to index colors
-        colors = [pygame.color.Color("white"),pygame.color.Color("blue")]
+        colors = [pygame.color.Color("white"),pygame.color.Color("yellow"), pygame.color.Color("blue"), pygame.color.Color("red")]
         #float("inf") returns infinity! (well not really)
 
         costs = [1,4,float("inf")]
@@ -17,13 +21,24 @@ class GridWorld:
         def __init__(self,wid,hi,scale):
             self.grid = Grid(wid, hi,scale)
 
+        def set_ideal_grid(self, grid):
+            self.ideal_grid = grid
+
         def draw(self,window):
                 for row in xrange(0,self.grid.height):
                         for col in xrange(0,self.width()):
                                 xcoord = col * self.gridsize()
                                 ycoord = row * self.gridsize()
                                 val_at_loc = self.grid.val_at(col, row)
-                                color = self.colors[val_at_loc]
+                                val_at_ideal = self.ideal_grid.val_at(col, row)
+                                if val_at_loc == 0 and val_at_ideal == 0:
+                                    color = self.colors[self.both_empty]
+                                elif val_at_loc == 0 and val_at_ideal == 1:
+                                    color = self.colors[self.need_fill]
+                                elif val_at_loc == 1 and val_at_ideal == 1:
+                                    color = self.colors[self.both_full]
+                                else:
+                                    color = self.colors[self.wrong_fill]
 
                                 #actually draw the rectangle
                                 dimen_of_rect = self.gridsize()

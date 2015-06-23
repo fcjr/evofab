@@ -1,5 +1,6 @@
 import pygame
 from gridworld import GridWorld
+from grid import Grid
 from virtualprinter import VirtualPrinter
 from camera import VisualCamera
 from vector import Vector
@@ -14,6 +15,9 @@ class Runner:
 
         pygame.init()
         grid = GridWorld(20, 20, 30)
+        ideal_grid = Grid(20, 20, 30)
+        ideal_grid.grid = [[1 if x <= 10 else 0 for x in range(20)] for _ in range(20)]
+        grid.set_ideal_grid(ideal_grid)
         width = grid.width() * grid.gridsize()
         height = grid.height() * grid.gridsize()
         self.grid = grid
