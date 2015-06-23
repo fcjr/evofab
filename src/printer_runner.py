@@ -69,9 +69,18 @@ class Runner:
         if keys[pygame.K_DOWN]:
             self.printer.v.y += self.movement_constant
         if keys[pygame.K_p]:
-            self.camera.camera.all_cell_values()
+            self.print_all_camera_values()
         if keys[pygame.K_SPACE]:
             self.printer.v = Vector(0, 0)
+
+    def print_all_camera_values(self):
+        val_matrix = self.camera.camera.all_cell_values()
+        for row in val_matrix:
+            output = ''
+            for val in row:
+                output += str(val) + ' '
+            print output
+        print '*' * 10
 
     def redraw(self):
         self.grid.draw(self.window)
