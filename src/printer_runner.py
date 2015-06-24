@@ -61,7 +61,6 @@ class Runner:
             if event.key == pygame.K_p:
                 self.print_all_camera_values()
         keys = pygame.key.get_pressed()
-        #TODO: something something keyup -- John
         if keys[pygame.K_LEFT]:
             self.printer.v.x += self.movement_constant * -1
         if keys[pygame.K_RIGHT]:
