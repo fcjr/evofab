@@ -1,4 +1,6 @@
 # An implementation of backpropagation learning for feedforward networks.
+#
+# Credit: Lisa Meeden, Swarthmore College
 
 #------------------------------------------------------------------------------
 
