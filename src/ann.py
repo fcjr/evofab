@@ -124,9 +124,8 @@ class Network:
         It ensures that given pattern is the appropriate length and
         that the values are in the range 0-1. 
         """
-        assert len(pattern) == len(self.inputLayer), 'wrong pattern size'
         for (inputUnit, value) in zip(self.inputLayer, pattern):
-            assert 0 <= value <= 1, 'invalid pattern value %g' % value
+            #assert 0 <= value <= 1, 'invalid pattern value %g' % value
             inputUnit.activation = value
         for hiddenUnit in self.hiddenLayer:
             hiddenUnit.update()
