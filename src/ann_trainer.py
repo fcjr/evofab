@@ -76,19 +76,36 @@ class ann_trainer:
         self.camera = VisualCamera(self.gridworld, self.printer, 3)
 
         #gui stuff
-        #pygame.init()
-        #width = self.gridworld.width() * self.gridworld.gridsize()
-        #height = self.gridworld.height() * self.gridworld.gridsize()
-        #self.window = pygame.display.set_mode((width, height))
+        pygame.init()
+        width = self.gridworld.width() * self.gridworld.gridsize()
+        height = self.gridworld.height() * self.gridworld.gridsize()
+        self.window = pygame.display.set_mode((width, height))
 
     def train(self, path_to_training_set):
         n = Network(9, 6, 10)
         loader = training_set_loader(path_to_training_set)
         n.inputs, n.targets = loader.read()
         n.test()
-        n.train()
-        n.test()
+        n.train(3)
+        return n
+
+    def run(self, n, path_to_training_set):
+        loader = training_set_loader(path_to_training_set)
+        inputs, targets = loader.read()
+        output = []
+        for pattern in inputs:
+            result = n.propagate(pattern)
+            result = [int(round(x)) for x in result]
+            result = ''.join(map(str, result))
+            output.append(((self.decode(result[:5]), self.decode(result[5:]))))
+        return output
+
+    def decode(self, grayval):
+        rev_code = dict([(val, key) for key, val in graycode.items()])
+        return (rev_code[grayval] - 16) * 100
+            
 
 ideal_grid = Grid(scale=60, path='square.test')
 trainer = ann_trainer(ideal_grid)
-trainer.train('output.out')
+n = trainer.train('output.out')
+print trainer.run(n, 'output.out')

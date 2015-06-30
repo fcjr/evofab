@@ -212,7 +212,7 @@ class Network:
             #print '   teaching %s -> %s' % (pattern, target)
             self.teachPattern(pattern, target)
 
-    def train(self, cycles=10000):
+    def train(self, cycles=1000):
         """
         Trains the network for the given number of training cycles
         (with a default of 10000).  This method repeatedly calls
