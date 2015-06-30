@@ -1,5 +1,6 @@
 from virtualprinter import VirtualPrinter
 from camera import VisualCamera, Camera
+from vector import Vector
 from grid import Grid
 from gridworld import GridWorld
 from ann import Network
@@ -74,6 +75,7 @@ class ann_trainer:
         self.gridworld.set_ideal_grid(ideal_grid)
         self.printer = VirtualPrinter(10, 10, 9, 1, pygame.color.Color("darkorange"), self.gridworld)
         self.camera = VisualCamera(self.gridworld, self.printer, 3)
+        self.ideal_camera = Camera(self.gridworld.ideal_grid, self.printer, 3)
 
         #gui stuff
         pygame.init()
@@ -86,24 +88,34 @@ class ann_trainer:
         loader = training_set_loader(path_to_training_set)
         n.inputs, n.targets = loader.read()
         n.test()
-        n.train(3)
+        n.train(30)
         return n
 
     def run(self, n, path_to_training_set):
-        loader = training_set_loader(path_to_training_set)
-        inputs, targets = loader.read()
-        output = []
-        for pattern in inputs:
+        self.printer.position = Vector(150, 150)
+        while True:
+            self.printer.setPenDown()
+            actual = self.camera.camera.all_cell_values()
+            ideal = self.ideal_camera.all_cell_values()
+            pattern = [i - a for i,a in zip(actual, ideal)]
             result = n.propagate(pattern)
+            print 'pattern', pattern
             result = [int(round(x)) for x in result]
             result = ''.join(map(str, result))
-            output.append(((self.decode(result[:5]), self.decode(result[5:]))))
-        return output
+            print 'velocities', (self.decode(result[:5]), self.decode(result[5:]))
+            self.printer.v = Vector(self.decode(result[:5]), self.decode(result[5:]))
+            self.printer.simulate(1)
+            self.redraw()
+            pygame.display.update()
+
+    def redraw(self):
+        self.gridworld.draw(self.window)
+        self.printer.draw(self.window)
+        self.camera.draw(self.window)
 
     def decode(self, grayval):
         rev_code = dict([(val, key) for key, val in graycode.items()])
         return (rev_code[grayval] - 16) * 100
-            
 
 ideal_grid = Grid(scale=60, path='square.test')
 trainer = ann_trainer(ideal_grid)
