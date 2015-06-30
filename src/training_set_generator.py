@@ -3,7 +3,7 @@ import csv
 from gridworld import GridWorld
 from grid import Grid
 from virtualprinter import VirtualPrinter
-from camera import VisualCamera
+from camera import VisualCamera, Camera
 from vector import Vector
 
 graycode = {
@@ -58,6 +58,7 @@ class Generator:
         self.gridworld.set_ideal_grid(ideal_grid)
         self.printer = VirtualPrinter(10, 10, 9, 1, pygame.color.Color("darkorange"), self.gridworld)
         self.camera = VisualCamera(self.gridworld, self.printer, 3)
+        self.ideal_camera = Camera(self.gridworld.ideal_grid, self.printer, 3)
         
         #gui stuff
         pygame.init()
@@ -71,7 +72,9 @@ class Generator:
         self.printer.setPenDown()
         self.printer.v = Vector(0, 0)
         while self.aquire_data:
-            inputs.append(self.camera.camera.all_cell_values())
+            actual = self.camera.camera.all_cell_values()
+            ideal = self.ideal_camera.all_cell_values()
+            inputs.append([i - a for a,i in zip(actual, ideal)]) #subtract actual and ideal TODO: check to make sure this line is doing what i think it is
             outputs.append([self.printer.v.x, self.printer.v.y])
             self.act_and_refresh()
         outputs = [[graycode[int(pair[0]/100) + 16] + graycode[int(pair[1]/100) + 16]] for pair in outputs] #TODO fix this
@@ -80,7 +83,6 @@ class Generator:
             writer = csv.writer(output)
             writer.writerow(camera_headers + output_headers)
             for inval, outval in zip(inputs, outputs):
-                inval = [item for sublist in inval for item in sublist] #this shouldn't work but seems to?
                 writer.writerow(inval + outval)
 
     def act_and_refresh(self):

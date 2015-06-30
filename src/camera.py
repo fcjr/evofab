@@ -70,7 +70,7 @@ class Camera:
         return top_left_camera_coords
 
     def all_cell_values(self):
-        output = [[self.percent_in_view(Vector(x, y)) for x in range(self.n)] for y in range(self.n)]
+        output = [self.percent_in_view(Vector(x, y)) for x in range(self.n) for y in range(self.n)]
         return output
 
     def percent_in_view(self, gridcell):
