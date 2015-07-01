@@ -83,13 +83,18 @@ class ann_trainer:
         height = self.gridworld.height() * self.gridworld.gridsize()
         self.window = pygame.display.set_mode((width, height))
 
-    def train(self, n, path_to_training_set):
-        loader = training_set_loader(path_to_training_set)
-        n.inputs, n.targets = loader.read()
+    def train(self, n, paths_to_training_sets):
+        n.inputs = []
+        n.targets = []
+        for path in paths_to_training_sets:
+            loader = training_set_loader(path)
+            inputs, targets = loader.read()
+            n.inputs += inputs
+            n.targets += targets
         n.test()
-        n.train(500)
+        n.train(100)
 
-    def run(self, n, path_to_training_set):
+    def run(self, n):
         self.printer.position = Vector(150, 400)
         while True:
             self.printer.setPenDown()
@@ -115,9 +120,8 @@ class ann_trainer:
         rev_code = dict([(val, key) for key, val in graycode.items()])
         return (rev_code[grayval] - 16) * 100
 
-n = Network(9, 9, 10)
+n = Network(9, 6, 10)
 ideal_grid = Grid(scale=60, path='square.test')
 trainer = ann_trainer(ideal_grid)
-trainer.train(n, 'output.out')
-trainer.train(n, 'output2.out')
-print trainer.run(n, 'output.out')
+trainer.train(n, ['output.out', 'output1.out', 'output2.out', 'output3.out'])
+trainer.run(n)

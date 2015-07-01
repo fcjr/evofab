@@ -5,6 +5,7 @@ from grid import Grid
 from virtualprinter import VirtualPrinter
 from camera import VisualCamera, Camera
 from vector import Vector
+import sys
 
 graycode = {
        0  : "00000",
@@ -115,6 +116,7 @@ class Generator:
         self.printer.draw(self.window)
         self.camera.draw(self.window)
 
-
-gen = Generator(ideal_grid = Grid(scale=60, path='square.test'))
-gen.generate("output3.out")
+grid = sys.argv[1]
+outputfile = sys.argv[2]
+gen = Generator(ideal_grid = Grid(scale=60, path=grid))
+gen.generate(outputfile)
