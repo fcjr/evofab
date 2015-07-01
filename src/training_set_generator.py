@@ -117,4 +117,4 @@ class Generator:
 
 
 gen = Generator(ideal_grid = Grid(scale=60, path='square.test'))
-gen.generate("output.out")
+gen.generate("output3.out")

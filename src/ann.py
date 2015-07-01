@@ -39,6 +39,9 @@ class Unit:
         self.activation = self.sigmoidFunction(netActivation)
 
     def sigmoidFunction(self, x):
+        #don't know why this is getting HUGE things
+        if -x > 709:
+            return 1/-float('inf') #this is bad. i don't know what's going on here
         return 1 / (1 + math.exp(-x))
 
 #------------------------------------------------------------------------------
