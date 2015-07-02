@@ -92,10 +92,10 @@ class ann_trainer:
             n.inputs += inputs
             n.targets += targets
         n.test()
-        n.train(100)
+        n.train(30)
 
     def run(self, n):
-        self.printer.position = Vector(150, 400)
+        self.printer.position = Vector(220, 170)
         while True:
             self.printer.setPenDown()
             actual = self.camera.camera.all_cell_values()
@@ -120,8 +120,8 @@ class ann_trainer:
         rev_code = dict([(val, key) for key, val in graycode.items()])
         return (rev_code[grayval] - 16) * 100
 
-n = Network(9, 6, 10)
-ideal_grid = Grid(scale=60, path='square.test')
+n = Network(9, 7, 10)
+ideal_grid = Grid(scale=60, path='line.test')
 trainer = ann_trainer(ideal_grid)
-trainer.train(n, ['output.out', 'output1.out', 'output2.out', 'output3.out'])
+trainer.train(n, ['output1.out', 'output2.out', 'output3.out', 'output4.out', 'output5.out', 'output6.out', 'output7.out', 'output8.out'])
 trainer.run(n)
