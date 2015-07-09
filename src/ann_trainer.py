@@ -91,21 +91,22 @@ class ann_trainer:
             inputs, targets = loader.read()
             n.inputs += inputs
             n.targets += targets
+            #print 'loaded', path
         n.test()
-        n.train(30)
+        n.train(20)
 
     def run(self, n):
-        self.printer.position = Vector(220, 170)
+        self.printer.position = Vector(270, 150)
         while True:
             self.printer.setPenDown()
             actual = self.camera.camera.all_cell_values()
             ideal = self.ideal_camera.all_cell_values()
             pattern = [i - a for i,a in zip(actual, ideal)]
             result = n.propagate(pattern)
-            print 'pattern', pattern
+            #print 'pattern', pattern
             result = [int(round(x)) for x in result]
             result = ''.join(map(str, result))
-            print 'velocities', (self.decode(result[:5]), self.decode(result[5:]))
+            #print 'velocities', (self.decode(result[:5]), self.decode(result[5:]))
             self.printer.v = Vector(self.decode(result[:5]), self.decode(result[5:]))
             self.printer.simulate(1)
             self.redraw()
@@ -121,7 +122,7 @@ class ann_trainer:
         return (rev_code[grayval] - 16) * 100
 
 n = Network(9, 7, 10)
-ideal_grid = Grid(scale=60, path='line.test')
+ideal_grid = Grid(scale=60, path='corner.test')
 trainer = ann_trainer(ideal_grid)
-trainer.train(n, ['output1.out', 'output2.out', 'output3.out', 'output4.out', 'output5.out', 'output6.out', 'output7.out', 'output8.out'])
+trainer.train(n, ['training_sets/corner/' + x for x in ['output1.out', 'output2.out', 'output3.out', 'output4.out', 'output5.out']]) #this is bad fix this
 trainer.run(n)

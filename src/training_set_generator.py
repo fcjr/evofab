@@ -72,7 +72,7 @@ class Generator:
         outputs = []
         self.printer.setPenDown()
         self.printer.v = Vector(0, 0)
-        self.printer.position = Vector(230, 150)
+        self.printer.position = Vector(270, 130)
         while self.aquire_data:
             actual = self.camera.camera.all_cell_values()
             ideal = self.ideal_camera.all_cell_values()

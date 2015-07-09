@@ -234,6 +234,10 @@ class Network:
             if correct == total:
                 print 'All patterns learned'
                 break
+        activations = [u.activation for u in self.inputLayer + self.hiddenLayer + self.outputLayer]
+        weights = [c.weight for c in self.allConnections]
+        print 'max weights', max(weights), 'min weights', min(weights)
+        print 'max activations', max(activations), 'min activations', min(activations)
             
 #------------------------------------------------------------------------------
 # XOR function, learning rate=0.3 and tolerance=0.1
