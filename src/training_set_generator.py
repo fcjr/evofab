@@ -7,41 +7,6 @@ from camera import VisualCamera, Camera
 from vector import Vector
 import sys
 
-graycode = {
-       0  : "00000",
-       1  : "00001",
-       2  : "00010",
-       3  : "00011",
-       4  : "00100",
-       5  : "00101",
-       6  : "00110",
-       7  : "00111",
-       8  : "01000",
-       9  : "01001",
-       10 : "01010",
-       11 : "01011",
-       12 : "01100",
-       13 : "01101",
-       14 : "01110",
-       15 : "01111",
-       16 : "10000",
-       17 : "10001",
-       18 : "10010",
-       19 : "10011",
-       20 : "10100",
-       21 : "10101",
-       22 : "10110",
-       23 : "10111",
-       24 : "11000",
-       25 : "11001",
-       26 : "11010",
-       27 : "11011",
-       28 : "11100",
-       29 : "11101",
-       30 : "11110",
-       31 : "11111",
-    }
-
 camera_headers = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
 output_headers = ['x velocity y velocity']
 
@@ -76,16 +41,24 @@ class Generator:
         while self.aquire_data:
             actual = self.camera.camera.all_cell_values()
             ideal = self.ideal_camera.all_cell_values()
-            inputs.append([i - a for a,i in zip(actual, ideal)]) #subtract actual and ideal TODO: check to make sure this line is doing what i think it is
+            inputs.append([i - a for a,i in zip(actual, ideal)])
             outputs.append([self.printer.v.x, self.printer.v.y])
             self.act_and_refresh()
-        outputs = [[graycode[int(pair[0]/100) + 16] + graycode[int(pair[1]/100) + 16]] for pair in outputs] #TODO fix this
+        outputs = [[self.encode(x) + self.encode(y)] for x,y in outputs]
         self.aquire_data = True
         with open(outputfile, 'w') as output:
             writer = csv.writer(output)
             writer.writerow(camera_headers + output_headers)
             for inval, outval in zip(inputs, outputs):
                 writer.writerow(inval + outval)
+
+    def encode(self, velocity):
+        if velocity >= 100:
+            return "01"
+        elif velocity <= 100:
+            return "10"
+        else:
+            return "00"
 
     def act_and_refresh(self):
             self.act_on_key_input()
@@ -99,13 +72,13 @@ class Generator:
                 self.print_all_camera_values()
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT]:
-            self.printer.v.x += self.movement_constant * -1
+            self.printer.v = Vector(-100, 0)
         if keys[pygame.K_RIGHT]:
-            self.printer.v.x += self.movement_constant
+            self.printer.v = Vector(100, 0)
         if keys[pygame.K_UP]:
-            self.printer.v.y += self.movement_constant * -1
+            self.printer.v = Vector(0, -100)
         if keys[pygame.K_DOWN]:
-            self.printer.v.y += self.movement_constant
+            self.printer.v = Vector(0, 100)
         if keys[pygame.K_SPACE]:
             self.printer.v = Vector(0, 0)
         if keys[pygame.K_q]:
