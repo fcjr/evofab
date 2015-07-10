@@ -44,7 +44,8 @@ class Generator:
             inputs.append([i - a for a,i in zip(actual, ideal)])
             outputs.append([self.printer.v.x, self.printer.v.y])
             self.act_and_refresh()
-        outputs = [[self.encode(x) + self.encode(y)] for x,y in outputs]
+        inputs = [thing for thing in inputs[::100]]
+        outputs = [[self.encode(x) + self.encode(y)] for x,y in outputs[::100]]
         self.aquire_data = True
         with open(outputfile, 'w') as output:
             writer = csv.writer(output)
