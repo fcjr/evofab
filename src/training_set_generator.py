@@ -37,7 +37,7 @@ class Generator:
         outputs = []
         self.printer.setPenDown()
         self.printer.v = Vector(0, 0)
-        self.printer.position = Vector(250, 180)
+        self.printer.position = Vector(270, 150)
         while self.aquire_data:
             actual = self.camera.camera.all_cell_values()
             ideal = self.ideal_camera.all_cell_values()
@@ -45,7 +45,7 @@ class Generator:
             outputs.append([self.printer.v.x, self.printer.v.y])
             self.act_and_refresh()
         inputs = [thing for thing in inputs[::10]]
-        outputs = [[self.encode(x) + self.encode(y)] for x,y in outputs[::100]]
+        outputs = [[self.encode(x) + self.encode(y)] for x,y in outputs[::10]]
         self.aquire_data = True
         with open(outputfile, 'w') as output:
             writer = csv.writer(output)

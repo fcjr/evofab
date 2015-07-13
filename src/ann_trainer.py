@@ -88,7 +88,7 @@ class ann_trainer:
         self.printer.draw(self.window)
         self.camera.draw(self.window)
 
-n = Network(9, 8, 4)
+n = Network(9, 6, 4)
 ideal_grid = Grid(scale=60, path='corner.test')
 trainer = ann_trainer(ideal_grid)
 trainer.train(n, ['training_sets/corner/' + x for x in ['output1', 'output2', 'output3', 'output4', 'output5', 'output6']])
