@@ -37,14 +37,14 @@ class Generator:
         outputs = []
         self.printer.setPenDown()
         self.printer.v = Vector(0, 0)
-        self.printer.position = Vector(270, 130)
+        self.printer.position = Vector(250, 180)
         while self.aquire_data:
             actual = self.camera.camera.all_cell_values()
             ideal = self.ideal_camera.all_cell_values()
             inputs.append([i - a for a,i in zip(actual, ideal)])
             outputs.append([self.printer.v.x, self.printer.v.y])
             self.act_and_refresh()
-        inputs = [thing for thing in inputs[::100]]
+        inputs = [thing for thing in inputs[::10]]
         outputs = [[self.encode(x) + self.encode(y)] for x,y in outputs[::100]]
         self.aquire_data = True
         with open(outputfile, 'w') as output:
@@ -56,7 +56,7 @@ class Generator:
     def encode(self, velocity):
         if velocity >= 100:
             return "01"
-        elif velocity <= 100:
+        elif velocity <= -100:
             return "10"
         else:
             return "00"
