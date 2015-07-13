@@ -11,6 +11,8 @@ import csv
 camera_headers = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
 output_headers = ['x velocity', 'y velocity']
 
+downsample_constant = 80
+
 class training_set_loader:
 
     def __init__(self, path):
@@ -28,6 +30,8 @@ class training_set_loader:
                 camera_vals.append(row[:len(camera_headers)])
                 velocities.append(row[len(camera_headers):][0])
                 velocities = [[int(x) for x in string] for string in velocities]
+        camera_vals = camera_vals[::downsample_constant]
+        velocities = velocities[::downsample_constant]
         return (
                 [[float(x) for x in row] for row in camera_vals],
                 velocities
@@ -58,7 +62,7 @@ class ann_trainer:
             n.targets += targets
             #print 'loaded', path
         n.test()
-        n.train(10000)
+        n.train(400)
 
     def run(self, n):
         self.printer.position = Vector(270, 150)
@@ -91,5 +95,5 @@ class ann_trainer:
 n = Network(9, 6, 4)
 ideal_grid = Grid(scale=60, path='corner.test')
 trainer = ann_trainer(ideal_grid)
-trainer.train(n, ['training_sets/corner/' + x for x in ['output1', 'output2', 'output3', 'output4', 'output5', 'output6']])
+trainer.train(n, ['training_sets/corner/' + x for x in ['output1', 'output2', 'output3', 'output4', 'output5', 'output6', 'output7', 'output8', 'output9']])
 trainer.run(n)
