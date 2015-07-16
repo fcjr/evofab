@@ -84,7 +84,7 @@ class Network:
         hiddenBias = Unit(1.0)
         self.connectToLayer(hiddenBias, self.hiddenLayer)
         # set the learning parameters
-        self.learningRate = 0.15
+        self.learningRate = 0.3
         self.momentum = 0.0
         self.tolerance = 0.1
 
