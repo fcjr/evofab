@@ -84,7 +84,7 @@ class Network:
         hiddenBias = Unit(1.0)
         self.connectToLayer(hiddenBias, self.hiddenLayer)
         # set the learning parameters
-        self.learningRate = 0.3
+        self.learningRate = 0.15
         self.momentum = 0.0
         self.tolerance = 0.1
 
@@ -226,11 +226,16 @@ class Network:
         (correct, total, score, error) = self.computeError()
         print 'Epoch #    0: TSS error %7.4f, %d/%d correct (%.1f%%)' % \
               (error, correct, total, score)
+        print_epoch = 0
         for t in range(1, cycles+1):
             self.teachDataset()
             (correct, total, score, error) = self.computeError()
-            print 'Epoch #%5d: TSS error %7.4f, %d/%d correct (%.1f%%)' % \
-                  (t, error, correct, total, score)
+            if print_epoch >= 10:
+                print_epoch = 0
+                print 'Epoch #%5d: TSS error %7.4f, %d/%d correct (%.1f%%)' % \
+                        (t, error, correct, total, score)
+            else:
+                print_epoch += 1
             if correct == total:
                 print 'All patterns learned'
                 break

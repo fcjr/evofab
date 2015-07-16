@@ -11,7 +11,7 @@ import csv
 camera_headers = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
 output_headers = ['x velocity', 'y velocity']
 
-downsample_constant = 300
+downsample_constant = 100
 
 class training_set_loader:
 
@@ -92,7 +92,7 @@ class ann_trainer:
         self.printer.draw(self.window)
         self.camera.draw(self.window)
 
-n = Network(9, 7, 4)
+n = Network(9, 8, 4)
 ideal_grid = Grid(scale=60, path='corner.test')
 trainer = ann_trainer(ideal_grid)
 trainer.train(n, ['training_sets/corner/' + x for x in ['output1', 'output2', 'output3', 'output4', 'output5', 'output6', 'output7', 'output8', 'output9', 'output12']])
