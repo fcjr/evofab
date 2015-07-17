@@ -62,7 +62,7 @@ class ann_trainer:
             n.targets += targets
             #print 'loaded', path
         n.test()
-        n.train(1000)
+        n.train(8000)
 
     def run(self, n):
         self.printer.position = Vector(270, 150)
@@ -92,8 +92,8 @@ class ann_trainer:
         self.printer.draw(self.window)
         self.camera.draw(self.window)
 
-n = Network(9, 6, 4)
+n = Network(9, 7, 4)
 ideal_grid = Grid(scale=60, path='corner.test')
 trainer = ann_trainer(ideal_grid)
-trainer.train(n, ['training_sets/corner/' + x for x in ['output1', 'output2', 'output3', 'output4', 'output5', 'output6', 'output7']])#, 'output2', 'output3', 'output4', 'output5', 'output6', 'output7', 'output8', 'output9', 'output12']])
+trainer.train(n, ['training_sets/corner/' + x for x in ['output1', 'output2', 'output3', 'output4', 'output5', 'output6']])#, 'output2', 'output3', 'output4', 'output5', 'output6', 'output7', 'output8', 'output9', 'output12']])
 trainer.run(n)
