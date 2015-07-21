@@ -6,7 +6,7 @@ import csv
 camera_headers = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
 output_headers = ['x velocity', 'y velocity']
 
-downsample_constant = 1
+downsample_constant = 100
 
 class TrainingSetLoader:
 
