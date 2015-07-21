@@ -2,14 +2,10 @@
 #PBS -l walltime=30:00
 #PBS -j oe
 #PBS -N runanntrainer
+#PBS -m e
 
-if [ "$if [ "$PBS_ENVIRONMENT" != "PBS_INTERACTIVE" ] ; then
+if [ "$PBS_ENVIRONMENT" != "PBS_INTERACTIVE" ] ; then
     cd $PBS_O_WORKDIR
 fi
 
-typeset integer NPROCS
-NPROCS=`wc -l $PBS_NODEFILE | awk '{print $1}'`
-uniq $PBS_NODEFILE | sed -e 's/^/host /g' -e 's/$/-eth0/g' >/tmp/nodes
-NODES="/tmp/nodes"
-
-python
+/usr/local/bin/python src/train_to_file.py outputfile 10000 training_sets/corner/output1 training_sets/corner/output2 training_sets/corner/output3 training_sets/corner/output4 training_sets/corner/output5
