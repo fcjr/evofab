@@ -56,10 +56,3 @@ class AnnRunner:
         self.gridworld.draw(self.window)
         self.printer.draw(self.window)
         self.camera.draw(self.window)
-
-n = Network(9, 7, 4)
-ideal_grid = Grid(scale=60, path='corner.test')
-trainer = AnnTrainer()
-runner = AnnRunner(ideal_grid)
-trainer.train(n, ['training_sets/corner/' + x for x in ['output1', 'output2', 'output3', 'output4', 'output5', 'output6']], iterations=100)#, 'output2', 'output3', 'output4', 'output5', 'output6', 'output7', 'output8', 'output9', 'output12']])
-runner.run(n)
