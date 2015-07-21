@@ -1,8 +1,15 @@
 from ann import Network
 from ann_trainer import AnnTrainer
 import ann_io
+import sys
+
+ann_extension = '.ann'
+
+outputfile = sys.argv[1]
+iterations = int(sys.argv[2])
+files = sys.argv[3:]
 
 n = Network(9, 7, 4)
 trainer = AnnTrainer()
-trainer.train(n, ['training_sets/corner/' + x for x in ['output1', 'output2', 'output3', 'output4', 'output5', 'output6']], 100)
-ann_io.save(n, 'outputfile')
+trainer.train(n, files, iterations)
+ann_io.save(n, outputfile + '.ann')
