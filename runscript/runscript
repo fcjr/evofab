@@ -8,4 +8,4 @@ if [ "$PBS_ENVIRONMENT" != "PBS_INTERACTIVE" ] ; then
     cd $PBS_O_WORKDIR
 fi
 
-/usr/local/bin/python src/train_to_file.py outputfile 10000 training_sets/corner/output1 training_sets/corner/output2 training_sets/corner/output3 training_sets/corner/output4 training_sets/corner/output5
+/usr/local/bin/python src/train_to_file.py outputfile 10000 training_sets/corner/output1 training_sets/corner/output2 training_sets/corner/output3 training_sets/corner/output4 training_sets/corner/output5 training_sets/corner/output6 training_sets/corner/output7
