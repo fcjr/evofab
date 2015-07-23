@@ -1,12 +1,27 @@
 from ann import *
 from ann_runner import AnnRunner
 import random
+from multiprocessing import Process, Queue
 
 """
     Doesn't work if the neural network achieves sufficient intelligence to modify its source code
 
         -- Johnny Depp
 """
+
+class Hat:
+
+    def __init__(self, population):
+        self.tickets = []
+        for member in population:
+            for i in range(member.fitness):
+                self.tickets.append(member)
+
+    def pull(self):
+        return self.tickets[random.randint(0, len(self.tickets) -1)]
+
+    def size(self):
+        return len(self.tickets)
 
 class Population:
 
@@ -29,33 +44,44 @@ class Population:
     def iterate(self, num_iterations=10):
         self.random_seed()
         for i in xrange(num_iterations):
+            print "evaluating generation %d" % (i + 1)
             print self.eval_fitness()
             self.cull()
             self.breed()
 
     def eval_fitness(self):
-        for num, member in enumerate(self.members):
-            print 'expressing %d of %d' % (num + 1, len(self.members))
-            member.calculate_fitness()
-            print 'fitness: %d/%d' % (member.fitness, self.goal.width * self.goal.height)
+        q = Queue()
+        counter = 0
+        for iteration in range(len(self.members)/5):
+            processes = []
+            for num, member in zip(range(len(self.members)), self.members)[iteration * 5:(iteration * 5) + 5]:
+                p = Process(target=member.calculate_fitness, args=(q,))
+                print 'expressing %d of %d' % (num + 1, len(self.members))
+                p.start()
+                processes.append(p)
+            for p in processes:
+                p.join()
+            while not q.empty():
+                self.members[counter].fitness = q.get()
+                counter += 1
         fitnesses = [member.fitness for member in self.members]
-        fitnesses.sort(reverse=True)
+        fitnesses.sort()
         return fitnesses
 
     def cull(self):
         self.members.sort(key=lambda x: x.fitness)
-        self.members = self.members[:self.replacement_number] #cull the population
+        self.members = self.members[self.replacement_number:] #cull the population
 
     def breed(self):
-        total_fitness = sum([member.fitness for member in self.members])
+        hat = Hat(self.members)
         children = []
-        for member in self.members:
-            breed_weight = member.fitness/total_fitness
-            for i in range(int(round(breed_weight * self.replacement_number))):
-                child = Member(self)
-                child.crossover(member, self.get_random_other_member(member))
-                child.mutate()
-                children.append(child)
+        for i in range(self.replacement_number):
+            current_member = hat.pull()
+            child = Member(self)
+            child.crossover(current_member, self.get_random_other_member(current_member))
+            child.mutate()
+            children.append(child)
+        print len(children)
         self.members += children
 
     def get_random_other_member(self, to_ignore):
@@ -88,18 +114,19 @@ class Member:
             if rand_num < rate:
                 self.weights[i] = random.randint(-10, 10) #TODO: this is gonna break. Decide weight range
 
-    def calculate_fitness(self):
+    def calculate_fitness(self, q):
         phenotype = self.express()
         fitness = phenotype.width * phenotype.height #init fitness to max fitness
         for ideal_row, actual_row in zip(self.population.goal.grid, phenotype.grid):
             for ideal, actual in zip(ideal_row, actual_row):
                 if ideal == 1 and actual == 0:
-                    fitness -= 1
+                    fitness -= 2
                 elif ideal == 0 and actual == 1:
-                    fitness -= 0.5
+                    fitness -= 1
         self.fitness = fitness
+        q.put(fitness)
 
     def express(self):
         self.ann.allConnections = self.weights
         runner = AnnRunner(self.population.goal)
-        return runner.run(self.ann, iterations=5000, x=400, y=150)
+        return runner.run(self.ann, iterations=3000, x=325, y=175)
