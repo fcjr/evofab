@@ -49,8 +49,7 @@ class GridWorld:
                     pygame.draw.line(window, pygame.color.Color("black"), (self.grid.gridsize * col, 0), (self.grid.gridsize * col, self.grid.gridsize * self.width()))
 
         def inbounds(self,p):
-          (x,y) = p
-          return (x >= 0) and (x < self.width() * self.gridsize()) and (y >= 0) and (y < self.height() * self.gridsize())
+            return self.grid.inbounds(p)
 
         def width(self):
             return self.grid.width

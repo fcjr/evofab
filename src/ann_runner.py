@@ -14,14 +14,16 @@ output_headers = ['x velocity', 'y velocity']
 
 downsample_constant = 100
 
+camera_size = 3
+
 class AnnRunner:
 
     def __init__(self, ideal_grid):
         self.gridworld = GridWorld(ideal_grid.width, ideal_grid.height, ideal_grid.gridsize)
         self.gridworld.set_ideal_grid(ideal_grid)
         self.printer = VirtualPrinter(10, 10, 9, 1, pygame.color.Color("darkorange"), self.gridworld)
-        self.camera = VisualCamera(self.gridworld, self.printer, 3)
-        self.ideal_camera = Camera(self.gridworld.ideal_grid, self.printer, 3)
+        self.camera = VisualCamera(self.gridworld, self.printer, camera_size)
+        self.ideal_camera = Camera(self.gridworld.ideal_grid, self.printer, camera_size)
 
         #gui stuff
         pygame.init()
@@ -29,9 +31,9 @@ class AnnRunner:
         height = self.gridworld.height() * self.gridworld.gridsize()
         self.window = pygame.display.set_mode((width, height))
 
-    def run(self, n):
-        self.printer.position = Vector(270, 150)
-        while True:
+    def run(self, n, x=270, y=150, iterations=10000):
+        self.printer.position = Vector(x, y)
+        for i in xrange(iterations):
             self.printer.setPenDown()
             actual = self.camera.camera.all_cell_values()
             ideal = self.ideal_camera.all_cell_values()
@@ -43,6 +45,7 @@ class AnnRunner:
             self.printer.simulate(1)
             self.redraw()
             pygame.display.update()
+        return self.gridworld.grid
 
     def get_velocity(self, instruction):
         if instruction == "10":

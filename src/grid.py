@@ -42,7 +42,7 @@ class Grid:
 
     def inbounds(self,p):
         (x,y) = p
-        return (x >= 0) and (x < self.width*self.gridsize) and (y >= 0) and (y < self.height*self.gridsize)
+        return (x > 1.5 * self.gridsize) and (x < (self.width - 1.5) * self.gridsize) and (y > 1.5 * self.gridsize) and (y < (self.height - 1.5) * self.gridsize)
 
     #TODO: this shouldn't be here. should be in the visual grid. same with `scale` variable
     def find_closest_gridloc(self,p):
