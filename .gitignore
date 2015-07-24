@@ -1,3 +1,4 @@
 *.pyc
 *.ann
 runanntrainer.*
+gens/*
