@@ -26,7 +26,8 @@ class Hat:
 
 class Population:
 
-    def __init__(self, size, mutation_rate, replacement_number, num_input, num_hidden, num_output, goal):
+    def __init__(self, size, mutation_rate, replacement_number, num_input, num_hidden, num_output, goal, outputfolder='gens/'):
+        self.outputfolder = outputfolder
         self.size = size
         self.replacement_number = replacement_number
         self.mutation_rate = mutation_rate
@@ -50,7 +51,7 @@ class Population:
             self.cull()
             self.breed()
             for member_num, member in enumerate(self.members):
-                filename = 'generations/g%d_m%d' % (i, member_num)
+                filename = self.outputfolder + 'g%d_m%d' % (i, member_num)
                 ann_io.save(member.ann, filename)
                     
     def eval_fitness(self):
