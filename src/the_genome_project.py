@@ -41,22 +41,23 @@ class Population:
             new_member.randomize()
             self.members.append(new_member)
 
-    def iterate(self, num_iterations=10):
+    def iterate(self, num_iterations=10, threadnum=5):
         self.random_seed()
         for i in xrange(num_iterations):
             print "evaluating generation %d" % (i + 1)
-            print self.eval_fitness()
+            print self.eval_fitness(threadnum)
             self.cull()
             self.breed()
 
-    def eval_fitness(self):
+    def eval_fitness(self, threadnum):
         q = Queue()
         counter = 0
-        for iteration in range(len(self.members)/5):
+        for iteration in range(0, len(self.members), threadnum):
             processes = []
-            for num, member in zip(range(len(self.members)), self.members)[iteration * 5:(iteration * 5) + 5]:
+            while len(processes) < threadnum and counter + len(processes) + 1 < len(self.members):
+                print 'evaluating members %d - %d of %d' % (counter, counter + threadnum - 1, len(self.members))
+                member = self.members[iteration + len(processes)]
                 p = Process(target=member.calculate_fitness, args=(q,))
-                print 'expressing %d of %d' % (num + 1, len(self.members))
                 p.start()
                 processes.append(p)
             for p in processes:
@@ -120,7 +121,7 @@ class Member:
         for ideal_row, actual_row in zip(self.population.goal.grid, phenotype.grid):
             for ideal, actual in zip(ideal_row, actual_row):
                 if ideal == 1 and actual == 0:
-                    fitness -= 2
+                    fitness -= 3
                 elif ideal == 0 and actual == 1:
                     fitness -= 1
         self.fitness = fitness
