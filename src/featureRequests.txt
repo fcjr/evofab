@@ -1,0 +1,33 @@
+- (2) have display window persistent, rather than popping up a new one every evaluation
+- (2) integrated debugger
+	-- shared debug object, with varying levels of screen/file logging
+- (2) integrated display manager
+	-- when to display graphics
+	-- once per frame
+	-- once per individual
+	-- best of every generation
+
+
+
+- (1) Refactoring:
+--  make a Population superclass and a Genotype superclass
+----- make the printer stuff a subclass of this.
+-- cleaning up code should mean that you don't need so much code duplicated between the pygame and no-pygame versions. 
+--  there should be a way to do optional or environment-dependent includes (one file to rule them all for with/without pygame)
+-- wrap any code meant to be a "main" inside of the if __main__ syntax of python.
+
+-- by default don't save data, make it a command-line option
+----- when you do save data, save random key and version of code, or at least date.  
+----- usually I just have date and random key as part of filename, or use a header
+
+- (2) Tools to Parse Data
+-- - Write a scipy/numpy GA Watcher program, that turns the data being spewed by various processes into a sexy graph in real time.
+- (3) Learn to Profile python
+
+
+
+- (3) Worry about diversity? Measure it first.  I have some code snippets I hacked on the plane that I can share.
+
+- (1) GA Stuff: 
+-- why is location2 of xover fixed at half of genome?  just pick two random locations.
+
