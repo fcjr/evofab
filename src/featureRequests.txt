@@ -1,7 +1,7 @@
 - (2) have display window persistent, rather than popping up a new one every evaluation
 - (2) integrated debugger
 	-- shared debug object, with varying levels of screen/file logging
-- (2) integrated display manager
+- (2)integrated display manager
 	-- when to display graphics
 	-- once per frame
 	-- once per individual
@@ -31,3 +31,11 @@
 - (1) GA Stuff: 
 -- why is location2 of xover fixed at half of genome?  just pick two random locations.
 
+General Concerns:
+- there doesn't seem to be much richness to the fitness function, and that is very strange.  Need to run it with visualization on to see more clearly.
+
+BUGLIST:
+- code currently evaluates EVERY individual in pop every generation, which means that it re-evaluates kept members.  You can fix this by:
+-- only calling eval() when initializing new population and when adding new children.
+- problems with threads and indexing of population.
+- weights are currently INTS instead of floats.
