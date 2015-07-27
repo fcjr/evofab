@@ -43,6 +43,7 @@ class Population:
             new_member.randomize()
             self.members.append(new_member)
 
+#the GA method
     def iterate(self, num_iterations=10):
         self.random_seed()
         for i in xrange(num_iterations):
@@ -115,7 +116,7 @@ class Member:
     def mutate(self):
         rate = self.population.mutation_rate * 100
         for i in range(len(self.weights)):
-            rand_num = random.randint(0, 99)
+            rand_num = random.randint(0, 99) #TODO this is bad. dont hardcode this...
             if rand_num < rate:
                 self.weights[i] = random.randint(-10, 10) #TODO: this is gonna break. Decide weight range
 
