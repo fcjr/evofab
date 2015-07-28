@@ -1,6 +1,5 @@
 from ann import *
 import ann_io
-from clean_ann_runner import AnnRunner
 import random
 from multiprocessing import Process, Queue
 
@@ -52,26 +51,29 @@ class Population(object):
             print self.eval_fitness(threadnum)
             self.cull()
             self.breed()
-            for member_num, member in enumerate(self.members):
-                filename = self.outputfolder + 'g%d_m%d' % (i, member_num)
-                ann_io.save(member.ann, filename)
+            self.output(i)
+
+    def output(self, gen):
+        return
                     
     def eval_fitness(self, threadnum):
         q = Queue()
         counter = 0
-        for iteration in range(0, len(self.members), threadnum):
-            processes = []
-            while len(processes) < threadnum and counter + len(processes) < len(self.members):
-                print 'evaluating members %d - %d of %d' % (counter + 1, counter + threadnum, len(self.members))
-                member = self.members[iteration + len(processes)]
-                p = Process(target=member.calculate_fitness, args=(q,))
-                p.start()
-                processes.append(p)
-            for p in processes:
-                p.join()
-            while not q.empty():
-                self.members[counter].fitness = q.get()
-                counter += 1
+        for member in self.members:
+            member.calculate_fitness()
+        #for iteration in range(0, len(self.members), threadnum):
+        #    processes = []
+        #    while len(processes) < threadnum and counter + len(processes) < len(self.members):
+        #        print 'evaluating members %d - %d of %d' % (counter + 1, counter + threadnum, len(self.members))
+        #        member = self.members[iteration + len(processes)]
+        #        p = Process(target=member.calculate_fitness, args=(q,))
+        #        p.start()
+        #        processes.append(p)
+        #    for p in processes:
+        #        p.join()
+        #    while not q.empty():
+        #        self.members[counter].fitness = q.get()
+        #        counter += 1
         fitnesses = [member.fitness for member in self.members]
         fitnesses.sort()
         return fitnesses

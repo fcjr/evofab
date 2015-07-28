@@ -1,14 +1,23 @@
 from ann import *
 import ann_io
 from genetic_algorithms import Genotype, Population
-from clean_ann_runner import AnnRunner
+from ann_runner import AnnRunner
+from gui_ann_runner import GuiAnnRunner
 import random
 
 class AnnPopulation(Population):
 
-    def __init__(self, size, mutation_rate, replacement_number, num_input, num_hidden, num_output, goal, outputfolder='gens/'):
+    def __init__(self, size, mutation_rate, replacement_number, num_input, num_hidden, num_output, goal, outputfolder='gens/', is_visual=True, dump_to_files=False):
         super(AnnPopulation, self).__init__(size, mutation_rate, replacement_number, num_input, num_hidden, num_output, goal, outputfolder='gens/')
+        self.is_visual = is_visual
+        self.dump_to_files = dump_to_files
         self.genotype_factory = AnnGenotypeFactory(self)
+
+    def output(self, gen):
+        if self.dump_to_files:
+            for member_num, member in enumerate(self.members):
+                filename = self.outputfolder + 'g%d_m%d' % (gen, member_num)
+                ann_io.save(member.ann, filename)
 
 class AnnGenotypeFactory(object):
     def __init__(self, population):
@@ -47,5 +56,9 @@ class AnnGenotype(Genotype):
 
     def express(self):
         self.ann.allConnections = self.values
-        runner = AnnRunner(self.population.goal)
-        return runner.run(self.ann, iterations=3000, x=325, y=175)
+        if self.population.is_visual:
+            runner = GuiAnnRunner(self.population.goal)
+        else:
+            runner = AnnRunner(self.population.goal)
+        return runner.run(self.ann, iterations=1000, x=325, y=175)
+

@@ -1,24 +1,8 @@
 from grid import Grid
 from vector import Vector
-from virtualprinter import VirtualPrinter
-import pygame
+from printer import Printer
 
-class VisualCamera:
-    """Visual wrapper on the camera class"""
-
-    def __init__(self, visual_grid, printer, n):
-        self.color = pygame.color.Color("black")
-        self.camera = Camera(visual_grid.grid, printer, n)
-
-    def draw(self, window):
-        topleft = self.camera.get_top_left_camera_coords()
-        for row in xrange(self.camera.n + 1):
-                #xcoord = (col * self.camera.grid.gridsize) + self.camera.get_top_left_camera_coords().x
-                pygame.draw.line(window, pygame.color.Color("black"), (topleft.x, topleft.y + self.camera.gridsize() * row), (topleft.x + self.camera.gridsize() * self.camera.n, topleft.y + self.camera.gridsize() * row))
-        for col in xrange(self.camera.n + 1):
-                pygame.draw.line(window, pygame.color.Color("black"), (topleft.x + self.camera.gridsize() * col, topleft.y), (topleft.x + self.camera.gridsize() * col, topleft.y + self.camera.gridsize() * self.camera.n))
-
-class Camera:
+class Camera(object):
     """ Simulates a camera attached to the print head of the printer.
     It is defined in a grid, and does processing on each grid space to
     determine the percentage filled with material in that camera region.

@@ -1,6 +1,6 @@
 from vector import Vector
 
-class Printer:
+class Printer(object):
 
     def __init__ (self, x, y, r, m, grid, xv=0, yv=0):
         self.position = Vector(float(x), float(y))
