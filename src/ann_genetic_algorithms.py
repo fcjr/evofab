@@ -43,11 +43,11 @@ class AnnGenotype(Genotype):
 
     def calculate_fitness(self, q=None):
         phenotype = self.express()
-        fitness = phenotype.width * phenotype.height #init fitness to max fitness
+        fitness = 0
         for ideal_row, actual_row in zip(self.population.goal.grid, phenotype.grid):
             for ideal, actual in zip(ideal_row, actual_row):
-                if ideal == 1 and actual == 0:
-                    fitness -= 2
+                if ideal == 1 and actual == 1:
+                    fitness += 20
                 elif ideal == 0 and actual == 1:
                     fitness -= 1
         self.fitness = fitness
@@ -60,5 +60,4 @@ class AnnGenotype(Genotype):
             runner = GuiAnnRunner(self.population.goal)
         else:
             runner = AnnRunner(self.population.goal)
-        return runner.run(self.ann, iterations=1000, x=325, y=175)
-
+        return runner.run(self.ann, iterations=1000, x=325, y=125)
