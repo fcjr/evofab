@@ -4,13 +4,7 @@ from clean_ann_runner import AnnRunner
 import random
 from multiprocessing import Process, Queue
 
-"""
-    Doesn't work if the neural network achieves sufficient intelligence to modify its source code
-
-        -- Johnny Depp
-"""
-
-class Hat:
+class Hat(object):
 
     def __init__(self, population):
         self.tickets = []
@@ -24,9 +18,17 @@ class Hat:
     def size(self):
         return len(self.tickets)
 
-class Population:
+class GenericGenotypeFactory(object):
+    def __init__(self, population):
+        self.pop = population
+
+    def new(self):
+        return Genotype(self.pop)
+
+class Population(object):
 
     def __init__(self, size, mutation_rate, replacement_number, num_input, num_hidden, num_output, goal, outputfolder='gens/'):
+        self.genotype_factory = GenericGenotypeFactory(self)
         self.outputfolder = outputfolder
         self.size = size
         self.replacement_number = replacement_number
@@ -37,15 +39,14 @@ class Population:
         self.num_output = num_output
         self.members = []
 
-    def random_seed(self):
+    def create_initial_population(self):
         for i in range(self.size):
-            new_member = Member(self)
+            new_member = self.genotype_factory.new()
             new_member.randomize()
             self.members.append(new_member)
 
-#the GA method
     def iterate(self, num_iterations=10):
-        self.random_seed()
+        self.create_initial_population()
         for i in xrange(num_iterations):
             print "evaluating generation %d" % (i + 1)
             print self.eval_fitness()
@@ -58,18 +59,20 @@ class Population:
     def eval_fitness(self):
         q = Queue()
         counter = 0
-        for iteration in range(0, len(self.members), 12):
-            processes = []
-            while len(processes) < 12 and counter + len(processes) + 1 < len(self.members):
-                member = self.members[iteration + len(processes)]
-                p = Process(target=member.calculate_fitness, args=(q,))
-                p.start()
-                processes.append(p)
-            for p in processes:
-                p.join()
-            while not q.empty():
-                self.members[counter].fitness = q.get()
-                counter += 1
+        for member in self.members:
+            member.calculate_fitness()
+        #for iteration in range(0, len(self.members), 12):
+        #    processes = []
+        #    while len(processes) < 12 and counter + len(processes) + 1 < len(self.members):
+        #        member = self.members[iteration + len(processes)]
+        #        p = Process(target=member.calculate_fitness, args=(q,))
+        #        p.start()
+        #        processes.append(p)
+        #    for p in processes:
+        #        p.join()
+        #    while not q.empty():
+        #        self.members[counter].fitness = q.get()
+        #        counter += 1
         fitnesses = [member.fitness for member in self.members]
         fitnesses.sort()
         return fitnesses
@@ -83,7 +86,7 @@ class Population:
         children = []
         for i in range(self.replacement_number):
             current_member = hat.pull()
-            child = Member(self)
+            child = self.genotype_factory.new()
             child.crossover(current_member, self.get_random_other_member(current_member))
             child.mutate()
             children.append(child)
@@ -97,42 +100,18 @@ class Population:
         choice = random.choice(members)
         return choice
         
-class Member:
+class Genotype(object):
+    """ Generic genotype for GAs """
 
-    def __init__(self, population):
+    def __init__(self, population, size=0):
         self.population = population
-        self.ann = Network(population.num_input, population.num_hidden, population.num_output)
-        self.weights = [ 0 for x in self.ann.allConnections ]
-        self.fitness = 0
-
-    def randomize(self):
-        self.weights = [ random.randint(-10, 10) for x in self.weights]
+        self.values = [ 0 for x in range(size)]
+        self.fitness = None
 
     def crossover(self, p1, p2):
-        location1 = random.randint(0, len(self.weights)/2)
-        location2 = location1 + len(self.weights)/2
-        self.weights = p1.weights[:location1] + p2.weights[location1:location2] + p1.weights[location2:]
+        location1 = random.randint(0, len(self.values)/2)
+        location2 = location1 + len(self.values)/2
+        self.values = p1.values[:location1] + p2.values[location1:location2] + p1.values[location2:]
 
-    def mutate(self):
-        rate = self.population.mutation_rate * 100
-        for i in range(len(self.weights)):
-            rand_num = random.randint(0, 99) #TODO this is bad. dont hardcode this...
-            if rand_num < rate:
-                self.weights[i] = random.randint(-10, 10) #TODO: this is gonna break. Decide weight range
-
-    def calculate_fitness(self, q):
-        phenotype = self.express()
-        fitness = phenotype.width * phenotype.height #init fitness to max fitness
-        for ideal_row, actual_row in zip(self.population.goal.grid, phenotype.grid):
-            for ideal, actual in zip(ideal_row, actual_row):
-                if ideal == 1 and actual == 0:
-                    fitness -= 2
-                elif ideal == 0 and actual == 1:
-                    fitness -= 1
-        self.fitness = fitness
-        q.put(fitness)
-
-    def express(self):
-        self.ann.allConnections = self.weights
-        runner = AnnRunner(self.population.goal)
-        return runner.run(self.ann, iterations=3000, x=325, y=175)
+    def randomize(self):
+        self.values = [ random.randint(-10, 10) for x in self.values]

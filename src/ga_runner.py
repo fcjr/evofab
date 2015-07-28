@@ -1,5 +1,5 @@
-from the_genome_project import Population
+from ann_genetic_algorithms import AnnPopulation
 from grid import Grid
 
-population = Population(100, .1, 50, 9, 6, 4, Grid(scale=50, path='corner.test'))
-population.iterate(100, 1)
+population = AnnPopulation(10, .1, 2, 9, 6, 4, Grid(scale=50, path='corner.test'))
+population.iterate(100)
