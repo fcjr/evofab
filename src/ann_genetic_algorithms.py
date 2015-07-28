@@ -39,7 +39,7 @@ class AnnGenotype(Genotype):
         for i in range(len(self.values)):
             rand_num = random.randint(0, 99) #TODO this is bad. dont hardcode this...
             if rand_num < rate:
-                self.values[i] = random.randint(-10, 10) #TODO: this is gonna break. Decide weight range
+                self.values[i] = random.randrange(-10, 10) #TODO: this is gonna break. Decide weight range
 
     def calculate_fitness(self, q=None):
         phenotype = self.express()

@@ -110,9 +110,12 @@ class Genotype(object):
         self.fitness = None
 
     def crossover(self, p1, p2):
-        location1 = random.randint(0, len(self.values)/2)
-        location2 = location1 + len(self.values)/2
+        location1 = random.randint(0, len(self.values))
+        location2 = random.randint(0, len(self.values))
+        while location2 == location1:
+            location2 = random.randint(0, len(self.values))
+        location1, location2 = min(location1, location2), max(location1, location2)
         self.values = p1.values[:location1] + p2.values[location1:location2] + p1.values[location2:]
 
     def randomize(self):
-        self.values = [ random.randint(-10, 10) for x in self.values]
+        self.values = [ random.randrange(-10, 10) for x in self.values]
