@@ -93,8 +93,11 @@ class Population(object):
             counter += threadnum
 
     def cull(self):
-        self.members.sort(key=lambda x: x.fitness)
+        self.sort_by_fitness()
         self.members = self.members[self.replacement_number:] #cull the population
+
+    def sort_by_fitness(self):
+        self.members.sort(key=lambda x: x.fitness)
 
     def breed(self):
         hat = Hat(self.members)
@@ -105,8 +108,7 @@ class Population(object):
             child.crossover(current_member, self.get_random_other_member(current_member))
             child.mutate()
             children.append(child)
-        print len(children)
-        self.members += children
+        self.members = children + self.members
         return children
 
     def get_random_other_member(self, to_ignore):

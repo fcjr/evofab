@@ -14,6 +14,7 @@ class AnnPopulation(Population):
 
     def output(self, gen):
         if self.dump_to_files:
+            self.sort_by_fitness()
             for member_num, member in enumerate(self.members):
                 filename = self.outputfolder + 'g%d_m%d' % (gen, member_num)
                 ann_io.save(member.ann, filename)
