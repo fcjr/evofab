@@ -46,35 +46,51 @@ class Population(object):
 
     def iterate(self, num_iterations=10, threadnum=5):
         self.create_initial_population()
+        print "evaluating initial population"
+        self.eval_fitness(self.members, threadnum)
+        self.print_fitnesses()
+        self.output(0)
         for i in xrange(num_iterations):
             print "evaluating generation %d" % (i + 1)
-            print self.eval_fitness(threadnum)
             self.cull()
-            self.breed()
+            children = self.breed()
+            self.eval_fitness(children, threadnum)
+            self.print_fitnesses()
             self.output(i)
+
+    def print_fitnesses(self):
+        fitnesses = [member.fitness for member in self.members]
+        fitnesses.sort()
+        print fitnesses
 
     def output(self, gen):
         return
                     
-    def eval_fitness(self, threadnum):
+    def eval_fitness(self, members, threadnum):
         q = Queue()
         counter = 0
-        for iteration in range(0, len(self.members), threadnum):
+        for iteration in range(0, len(members), threadnum):
             processes = []
-            while len(processes) < threadnum and counter + len(processes) < len(self.members):
-                print 'evaluating members %d - %d of %d' % (counter + 1, counter + threadnum, len(self.members))
-                member = self.members[iteration + len(processes)]
+            while len(processes) < threadnum and counter + len(processes) < len(members):
+                print 'evaluating members %d - %d of %d' % (counter + 1, counter + threadnum, len(members))
+                member = members[iteration + len(processes)]
                 p = Process(target=member.calculate_fitness, args=(q,))
                 p.start()
                 processes.append(p)
             for p in processes:
                 p.join()
             while not q.empty():
-                self.members[counter].fitness = q.get()
-                counter += 1
-        fitnesses = [member.fitness for member in self.members]
-        fitnesses.sort()
-        return fitnesses
+                actual_vals, fitness = q.get()
+                possible_members = members[counter:counter + threadnum]
+                member_num = 0
+                found = False
+                while member_num < threadnum and not found:
+                    if actual_vals == possible_members[member_num].values:
+                        found = True
+                        possible_members[member_num].fitness = fitness
+                    member_num += 1
+                members[counter].fitness 
+            counter += threadnum
 
     def cull(self):
         self.members.sort(key=lambda x: x.fitness)
@@ -91,6 +107,7 @@ class Population(object):
             children.append(child)
         print len(children)
         self.members += children
+        return children
 
     def get_random_other_member(self, to_ignore):
         """ returns a random member of the population other than the member specified

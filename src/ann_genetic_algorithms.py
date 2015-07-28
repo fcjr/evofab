@@ -2,7 +2,6 @@ from ann import *
 import ann_io
 from genetic_algorithms import Genotype, Population
 from ann_runner import AnnRunner
-from gui_ann_runner import GuiAnnRunner
 import random
 
 class AnnPopulation(Population):
@@ -52,11 +51,12 @@ class AnnGenotype(Genotype):
                     fitness -= 1
         self.fitness = fitness
         if q:
-            q.put(fitness)
+            q.put((self.values, fitness))
 
     def express(self):
         self.ann.allConnections = self.values
         if self.population.is_visual:
+            from gui_ann_runner import GuiAnnRunner
             runner = GuiAnnRunner(self.population.goal)
         else:
             runner = AnnRunner(self.population.goal)
