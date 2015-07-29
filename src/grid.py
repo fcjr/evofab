@@ -32,13 +32,13 @@ class Grid:
             self.grid = [[self.empty for x in xrange(self.width)] for x in xrange(self.height)]
 
     def val_at(self, x, y):
-        return self.grid[x][y]
+        return self.grid[y][x]
 
     def val_at_vector(self, vector):
         return self.grid[vector.x][vector.y]
 
     def set_loc_val(self, x, y, val):
-        self.grid[x][y] = val
+        self.grid[y][x] = val
 
     def inbounds(self,p):
         (x,y) = p
