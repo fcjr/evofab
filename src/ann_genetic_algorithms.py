@@ -43,20 +43,16 @@ class AnnGenotype(Genotype):
 
     def calculate_fitness(self, q=None):
         phenotype = self.express()
-        fitnesses = []
+        fitness = 0
         for ideal_grid, actual_grid in phenotype:
-            fitness = 0
             for ideal_row, actual_row in zip(ideal_grid, actual_grid):
                 for ideal, actual in zip(ideal_row, actual_row):
                     if ideal == 1 and actual == 1:
                         fitness += 20
                     elif ideal == 0 and actual == 1:
                         fitness -= 1
-            fitnesses.append(fitness)
-        print 'fitnesses: ', fitnesses
-        total_fitness = sum(fitnesses)
         if q:
-            q.put((self.values, total_fitness))
+            q.put((self.values, fitness))
 
     def express(self):
         result = []
