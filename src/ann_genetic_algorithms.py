@@ -43,22 +43,30 @@ class AnnGenotype(Genotype):
 
     def calculate_fitness(self, q=None):
         phenotype = self.express()
-        fitness = 0
-        for ideal_row, actual_row in zip(self.population.goal.grid, phenotype.grid):
-            for ideal, actual in zip(ideal_row, actual_row):
-                if ideal == 1 and actual == 1:
-                    fitness += 20
-                elif ideal == 0 and actual == 1:
-                    fitness -= 1
-        self.fitness = fitness
+        fitnesses = []
+        for ideal_grid, actual_grid in phenotype:
+            fitness = 0
+            for ideal_row, actual_row in zip(ideal_grid, actual_grid):
+                for ideal, actual in zip(ideal_row, actual_row):
+                    if ideal == 1 and actual == 1:
+                        fitness += 20
+                    elif ideal == 0 and actual == 1:
+                        fitness -= 1
+            fitnesses.append(fitness)
+        print 'fitnesses: ', fitnesses
+        total_fitness = sum(fitnesses)
         if q:
-            q.put((self.values, fitness))
+            q.put((self.values, total_fitness))
 
     def express(self):
+        result = []
         self.ann.allConnections = self.values
-        if self.population.is_visual:
-            from gui_ann_runner import GuiAnnRunner
-            runner = GuiAnnRunner(self.population.goal)
-        else:
-            runner = AnnRunner(self.population.goal)
-        return runner.run(self.ann, iterations=1000, x=325, y=125)
+        for world in self.population.goal:
+            if self.population.is_visual:
+                from gui_ann_runner import GuiAnnRunner
+                runner = GuiAnnRunner(world)
+            else:
+                runner = AnnRunner(world)
+            ideal_grid, actual_grid = runner.run(self.ann, iterations=1000, x=325, y=125)
+            result.append((ideal_grid.grid, actual_grid.grid))
+        return result

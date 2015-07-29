@@ -18,6 +18,7 @@ class GuiAnnRunner(AnnRunner):
         self.printer = GuiPrinter(10, 10, 9, 1, self.gridworld)
         self.camera = GuiCamera(self.gridworld.grid, self.printer, camera_size)
         self.ideal_camera = GuiCamera(self.gridworld.ideal_grid, self.printer, camera_size) #TODO: this might break -- might need a gridworld not a grid
+        self.ideal_grid = self.gridworld.ideal_grid
         width = self.gridworld.width() * self.gridworld.gridsize()
         height = self.gridworld.height() * self.gridworld.gridsize()
 

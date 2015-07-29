@@ -9,5 +9,5 @@ num_threads = int(sys.argv[3])
 is_visual = mode == 'visual'
 is_dumping = run_type == 'exp'
 
-population = AnnPopulation(300, .1, 240, 9, 8, 4, Grid(scale=50, path='corner.test'), is_visual=is_visual, dump_to_files=is_dumping)
+population = AnnPopulation(30, .1, 24, 9, 8, 4, [Grid(scale=50, path='worlds/corner.test'), Grid(scale=50, path='worlds/line.test'), Grid(scale=50, path='worlds/squiggle.test')], is_visual=is_visual, dump_to_files=is_dumping)
 population.iterate(2000, num_threads)

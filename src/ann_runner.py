@@ -13,6 +13,7 @@ class AnnRunner(object):
         self.gridworld.set_ideal_grid(ideal_grid)
         self.printer = Printer(10, 10, 9, 1, self.gridworld)
         self.camera = Camera(self.gridworld.grid, self.printer, self.camera_size)
+        self.ideal_grid = self.gridworld.ideal_grid
         self.ideal_camera = Camera(self.gridworld.ideal_grid, self.printer, self.camera_size)
         width = self.gridworld.width() * self.gridworld.gridsize()
         height = self.gridworld.height() * self.gridworld.gridsize()
@@ -30,7 +31,7 @@ class AnnRunner(object):
             self.printer.v = Vector(self.get_velocity(result[:2]), self.get_velocity(result[2:]))
             self.printer.simulate(1)
             self.update()
-        return self.gridworld.grid
+        return (self.ideal_grid, self.gridworld.grid)
 
     def update(self):
         return
