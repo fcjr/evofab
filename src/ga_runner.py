@@ -11,10 +11,10 @@ is_visual = mode == 'visual'
 is_dumping = run_type == 'exp'
 
 param = {
-        'pop_size' : 30,
+        'pop_size' : 300,
         'mutation_rate' : 0.1,
         'mutation_range' : (-10, 10),
-        'cull_num' : 24,
+        'cull_num' : 240,
         'ann_input' : 9,
         'ann_hidden' : 8,
         'ann_output' : 4,
@@ -22,8 +22,8 @@ param = {
         'inputs' : ['worlds/corner.test', 'worlds/line.test', 'worlds/squiggle.test'],
         'random_seed' : datetime.datetime.now(),
         'num_gens' : 2000,
-        'printer_runtime' : 1000,
-        'printer_speed' : 900
+        'printer_runtime' : 300,
+        'printer_speed' : 2700
         }
 
 if is_dumping:
