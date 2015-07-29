@@ -8,4 +8,4 @@ if [ "$PBS_ENVIRONMENT" != "PBS_INTERACTIVE" ] ; then
     cd $PBS_O_WORKDIR
 fi
 
-/usr/local/bin/python src/ga_runner.py no exp
+/usr/local/bin/python src/ga_runner.py no exp 12

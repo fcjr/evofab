@@ -4,9 +4,10 @@ import sys
 
 mode = sys.argv[1]
 run_type = sys.argv[2]
+num_threads = int(sys.argv[3])
 
 is_visual = mode == 'visual'
 is_dumping = run_type == 'exp'
 
 population = AnnPopulation(300, .1, 240, 9, 8, 4, Grid(scale=50, path='corner.test'), is_visual=is_visual, dump_to_files=is_dumping)
-population.iterate(2000, 12)
+population.iterate(2000, num_threads)
