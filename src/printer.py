@@ -9,6 +9,9 @@ class Printer(object):
         self.grid = grid
         self.penDown = False
 
+    def set_position_on_grid(self, xcell, ycell):
+        self.position = Vector((xcell * self.grid.gridsize()) + self.grid.gridsize()/2, (ycell * self.grid.gridsize())+ self.grid.gridsize()/2)
+
     def stop_v (self):
         """ Reset the velocity to 0 if it gets very close. """
         if self.v.length() < 3:
