@@ -61,4 +61,4 @@ class AnnGenotype(Genotype):
             runner = GuiAnnRunner(self.population.goal)
         else:
             runner = AnnRunner(self.population.goal)
-        return runner.run(self.ann, iterations=3000, x=325, y=125)
+        return runner.run(self.ann, iterations=1000, x=325, y=125)

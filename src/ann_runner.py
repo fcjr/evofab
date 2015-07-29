@@ -37,8 +37,8 @@ class AnnRunner(object):
 
     def get_velocity(self, instruction):
         if instruction == "10":
-            return -300
+            return -900
         elif instruction == "01":
-            return 300
+            return 900
         else:
             return 0
