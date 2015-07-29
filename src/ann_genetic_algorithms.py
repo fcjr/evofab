@@ -6,8 +6,11 @@ import random
 
 class AnnPopulation(Population):
 
-    def __init__(self, size, mutation_rate, replacement_number, num_input, num_hidden, num_output, goal, outputfolder='gens/', is_visual=True, dump_to_files=False):
-        super(AnnPopulation, self).__init__(size, mutation_rate, replacement_number, num_input, num_hidden, num_output, goal, outputfolder='gens/')
+    def __init__(self, random_seed, printer_runtime, printer_speed, size, mutation_rate, mutation_range, replacement_number, num_input, num_hidden, num_output, goal, outputfolder='gens/', is_visual=True, dump_to_files=False):
+        super(AnnPopulation, self).__init__(random_seed, size, mutation_rate, mutation_range, replacement_number, num_input, num_hidden, num_output, goal, outputfolder='gens/')
+        self.printer_runtime = printer_runtime
+        self.printer_speed = printer_speed
+        random.seed(random_seed)
         self.is_visual = is_visual
         self.dump_to_files = dump_to_files
         self.genotype_factory = AnnGenotypeFactory(self)
@@ -37,9 +40,10 @@ class AnnGenotype(Genotype):
     def mutate(self):
         rate = self.population.mutation_rate * 100
         for i in range(len(self.values)):
-            rand_num = random.randint(0, 99) #TODO this is bad. dont hardcode this...
+            rand_num = random.randint(0, 99)
             if rand_num < rate:
-                self.values[i] = random.randrange(-10, 10) #TODO: this is gonna break. Decide weight range
+                lower, upper = self.population.mutation_range
+                self.values[i] = random.randrange(lower, upper)
 
     def calculate_fitness(self, q=None):
         phenotype = self.express()
@@ -63,6 +67,6 @@ class AnnGenotype(Genotype):
                 runner = GuiAnnRunner(world)
             else:
                 runner = AnnRunner(world)
-            ideal_grid, actual_grid = runner.run(self.ann, iterations=1000, x=10, y=4)
+            ideal_grid, actual_grid = runner.run(self.ann, iterations=self.population.printer_runtime, printer_speed=self.population.printer_speed, x=10, y=4)
             result.append((ideal_grid.grid, actual_grid.grid))
         return result
