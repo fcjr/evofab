@@ -8,6 +8,7 @@ import csv
 
 statsfileheader = ['gen num', 'min', 'max', 'median']
 curbest_filename = 'curbest.ann'
+statsfile_filename = 'stats.ann'
 
 class AnnPopulation(Population):
 
@@ -24,17 +25,18 @@ class AnnPopulation(Population):
         self.init_csv_writer()
 
     def init_csv_writer(self):
-        statsfile = open(self.outputfolder + 'stats.csv', 'w+')
-        writer = csv.writer(statsfile)
-        writer.writerow(statsfileheader)
-        self.writer = writer
+        with open(self.outputfolder + statsfile_filename, 'a') as statsfile:
+            writer = csv.writer(statsfile)
+            writer.writerow(statsfileheader)
 
     def write_stats(self, gen):
-        self.sort_by_fitness()
-        min_fitness = self.members[0].fitness
-        max_fitness = self.members[-1].fitness
-        median_fitness = self.members[len(self.members)/2].fitness
-        self.writer.writerow([gen, min_fitness, max_fitness, median_fitness])
+        with open(self.outputfolder + statsfile_filename, 'a') as statsfile:
+            self.sort_by_fitness()
+            min_fitness = self.members[0].fitness
+            max_fitness = self.members[-1].fitness
+            median_fitness = self.members[len(self.members)/2].fitness
+            writer = csv.writer(statsfile)
+            writer.writerow([gen, min_fitness, max_fitness, median_fitness])
     
     def output(self, gen):
         if self.dump_to_files:
