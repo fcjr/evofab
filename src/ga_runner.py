@@ -1,14 +1,28 @@
 from ann_genetic_algorithms import AnnPopulation
 from grid import Grid
 import datetime
+import getopt
 import sys
 
-mode = sys.argv[1]
-run_type = sys.argv[2]
-num_threads = int(sys.argv[3])
+helptext = 'ga_runner -v -d -t threadnum'
 
-is_visual = mode == 'visual'
-is_dumping = run_type == 'exp'
+try:
+    opts, args = getopt.getopt(sys.argv[1:], "vdt:", ["visual", "dumping", "threadnum="])
+except getopt.GetoptError:
+    print helptext
+    assert True == False
+
+is_visual = False
+is_dumping = False
+num_threads = 5
+
+for opt, arg in opts:
+    if opt in ('-v', '--visual'):
+        is_visual = True
+    elif opt in ('-d', '--dumping'):
+        is_dumping = True
+    elif opt in ('-t', '--threadnum'):
+        num_threads = int(arg)
 
 param = {
         'pop_size' : 300,

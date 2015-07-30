@@ -73,8 +73,8 @@ class Population(object):
         counter = 0
         for iteration in range(0, len(members), threadnum):
             processes = []
+            print 'evaluating members %d - %d of %d' % (counter + 1, counter + threadnum, len(members))
             while len(processes) < threadnum and counter + len(processes) < len(members):
-                #print 'evaluating members %d - %d of %d' % (counter + 1, counter + threadnum, len(members))
                 member = members[iteration + len(processes)]
                 p = Process(target=member.calculate_fitness, args=(q,))
                 p.start()
