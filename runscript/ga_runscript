@@ -1,5 +1,5 @@
 #PBS -l nodes=1:ppn=12
-#PBS -l walltime=3:00:00
+#PBS -l walltime=6:00:00
 #PBS -j oe
 #PBS -N ga_annevolution
 #PBS -m e
@@ -8,4 +8,4 @@ if [ "$PBS_ENVIRONMENT" != "PBS_INTERACTIVE" ] ; then
     cd $PBS_O_WORKDIR
 fi
 
-/usr/local/bin/python src/ga_runner.py no exp
+/usr/local/bin/python src/ga_runner.py no exp 12

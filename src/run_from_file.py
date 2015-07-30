@@ -9,4 +9,4 @@ world_file = sys.argv[2]
 n = ann_io.load(ann_file)
 ideal_grid = Grid(scale=50, path=world_file)
 runner = GuiAnnRunner(ideal_grid)
-runner.run(n, iterations=1000, x=325, y=125)
+runner.run(n, iterations=1000, x=10, y=4)

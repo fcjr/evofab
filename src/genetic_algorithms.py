@@ -26,12 +26,14 @@ class GenericGenotypeFactory(object):
 
 class Population(object):
 
-    def __init__(self, size, mutation_rate, replacement_number, num_input, num_hidden, num_output, goal, outputfolder='gens/'):
+    def __init__(self, random_seed, size, mutation_rate, mutation_range, replacement_number, num_input, num_hidden, num_output, goal, outputfolder='gens/'):
+        random.seed(random_seed)
         self.genotype_factory = GenericGenotypeFactory(self)
         self.outputfolder = outputfolder
         self.size = size
         self.replacement_number = replacement_number
         self.mutation_rate = mutation_rate
+        self.mutation_range = mutation_range
         self.goal = goal
         self.num_input = num_input
         self.num_hidden = num_hidden
