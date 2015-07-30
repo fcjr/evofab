@@ -11,11 +11,13 @@ curbest_filename = 'curbest.ann'
 
 class AnnPopulation(Population):
 
-    def __init__(self, random_seed, printer_runtime, printer_speed, size, mutation_rate, mutation_range, replacement_number, num_input, num_hidden, num_output, goal, outputfolder='data/', is_visual=True, dump_to_files=False):
+    def __init__(self, random_seed, printer_runtime, printer_speed, size, mutation_rate, mutation_range, replacement_number, num_input, num_hidden, num_output, reward_for_correct, punishment_for_incorrect, goal, outputfolder='data/', is_visual=True, dump_to_files=False):
         super(AnnPopulation, self).__init__(random_seed, size, mutation_rate, mutation_range, replacement_number, num_input, num_hidden, num_output, goal, outputfolder)
         self.printer_runtime = printer_runtime
         self.printer_speed = printer_speed
         random.seed(random_seed)
+        self.reward_for_correct = reward_for_correct
+        self.punishment_for_incorrect = punishment_for_incorrect
         self.is_visual = is_visual
         self.dump_to_files = dump_to_files
         self.genotype_factory = AnnGenotypeFactory(self)
@@ -70,9 +72,9 @@ class AnnGenotype(Genotype):
             for ideal_row, actual_row in zip(ideal_grid, actual_grid):
                 for ideal, actual in zip(ideal_row, actual_row):
                     if ideal == 1 and actual == 1:
-                        fitness += 20
+                        fitness += self.population.reward_for_correct
                     elif ideal == 0 and actual == 1:
-                        fitness -= 1
+                        fitness -= self.population.punishment_for_incorrect
         if q:
             q.put((self.values, fitness))
 

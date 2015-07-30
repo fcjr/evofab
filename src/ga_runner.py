@@ -30,12 +30,12 @@ for opt, arg in opts:
 current_time = datetime.datetime.now()
 
 param = {
-        'pop_size' : 10,
+        'pop_size' : 400,
         'mutation_rate' : 0.1,
         'mutation_range' : (-10, 10),
-        'cull_num' : 8,
+        'cull_num' : 320,
         'ann_input' : 9,
-        'ann_hidden' : 8,
+        'ann_hidden' : 9,
         'ann_output' : 4,
         'cell_scale' : 50,
         'inputs' : ['worlds/corner.test', 'worlds/line.test', 'worlds/squiggle.test'],
@@ -43,7 +43,9 @@ param = {
         'time' : current_time,
         'num_gens' : 2000,
         'printer_runtime' : 300,
-        'printer_speed' : 2700
+        'printer_speed' : 2700,
+        'reward_for_correct' : 20,
+        'punishment_for_incorrect': 1,
         }
 
 if is_dumping:
@@ -62,6 +64,8 @@ population = AnnPopulation(
         param['ann_input'], 
         param['ann_hidden'],
         param['ann_output'],
+        param['reward_for_correct'],
+        param['punishment_for_incorrect'],
         [Grid(scale=param['cell_scale'], path=val) for val in param['inputs']],
         is_visual=is_visual,
         dump_to_files=is_dumping,
