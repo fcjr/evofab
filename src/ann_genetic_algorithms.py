@@ -4,6 +4,9 @@ from genetic_algorithms import Genotype, Population
 from ann_runner import AnnRunner
 import random
 import os
+import csv
+
+statsfileheader = ['gen num', 'min', 'max', 'median']
 
 class AnnPopulation(Population):
 
@@ -15,7 +18,21 @@ class AnnPopulation(Population):
         self.is_visual = is_visual
         self.dump_to_files = dump_to_files
         self.genotype_factory = AnnGenotypeFactory(self)
+        self.init_csv_writer()
 
+    def init_csv_writer(self):
+        statsfile = open(self.outputfolder + 'stats.csv', 'w+')
+        writer = csv.writer(statsfile)
+        writer.writerow(statsfileheader)
+        self.writer = writer
+
+    def write_stats(self, gen):
+        self.sort_by_fitness()
+        min_fitness = self.members[0].fitness
+        max_fitness = self.members[-1].fitness
+        median_fitness = self.members[len(self.members)/2].fitness
+        self.writer.writerow([gen, min_fitness, max_fitness, median_fitness])
+    
     def output(self, gen):
         if self.dump_to_files:
             self.sort_by_fitness()
@@ -26,7 +43,6 @@ class AnnPopulation(Population):
             cmdstring = 'ln -f ' + filename + ' ' + self.outputfolder + 'curbest.ann'
             print cmdstring
             os.system(cmdstring)
-
 
 class AnnGenotypeFactory(object):
     def __init__(self, population):

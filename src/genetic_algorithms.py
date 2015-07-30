@@ -46,6 +46,9 @@ class Population(object):
             new_member.randomize()
             self.members.append(new_member)
 
+    def write_stats(self, gen):
+        return
+
     def iterate(self, num_iterations=10, threadnum=5):
         self.create_initial_population()
         print "evaluating initial population"
@@ -55,6 +58,7 @@ class Population(object):
         for i in xrange(num_iterations):
             print "evaluating generation %d" % (i + 1)
             self.cull()
+            self.write_stats(i)
             children = self.breed()
             self.eval_fitness(children, threadnum)
             self.print_fitnesses()

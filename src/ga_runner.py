@@ -4,7 +4,7 @@ import datetime
 import getopt
 import sys
 
-helptext = 'ga_runner -v -d -t threadnum'
+helptext = 'ga_runner.py -v -d -t threadnum'
 
 try:
     opts, args = getopt.getopt(sys.argv[1:], "vdt:", ["visual", "dumping", "threadnum="])
@@ -25,10 +25,10 @@ for opt, arg in opts:
         num_threads = int(arg)
 
 param = {
-        'pop_size' : 300,
+        'pop_size' : 10,
         'mutation_rate' : 0.1,
         'mutation_range' : (-10, 10),
-        'cull_num' : 240,
+        'cull_num' : 8,
         'ann_input' : 9,
         'ann_hidden' : 8,
         'ann_output' : 4,
