@@ -41,7 +41,7 @@ param = {
         'inputs' : ['worlds/corner.test', 'worlds/line.test', 'worlds/squiggle.test'],
         'random_seed' : int(current_time.strftime('%s')),
         'time' : current_time,
-        'num_gens' : 2000,
+        'num_gens' : 8000,
         'printer_runtime' : 300,
         'printer_speed' : 2700,
         'reward_for_correct' : 20,
