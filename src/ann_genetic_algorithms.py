@@ -3,6 +3,7 @@ import ann_io
 from genetic_algorithms import Genotype, Population
 from ann_runner import AnnRunner
 import random
+import os
 
 class AnnPopulation(Population):
 
@@ -18,9 +19,18 @@ class AnnPopulation(Population):
     def output(self, gen):
         if self.dump_to_files:
             self.sort_by_fitness()
-            for member_num, member in enumerate(self.members):
-                filename = self.outputfolder + 'g%d_m%d' % (gen, member_num)
-                ann_io.save(member.ann, filename)
+            filename = self.outputfolder + 'best-gen-'+str(gen)+'.ann'
+            member = self.members[-1]
+            ann_io.save(member.ann, filename)
+#            for member_num, member in enumerate(self.members):
+#                filename = self.outputfolder + 'g%d_m%d' % (gen, member_num)
+#                ann_io.save(member.ann, filename)
+
+            
+            cmdstring = 'ln -s -f ' + filename + ' curbest.ann'
+            print cmdstring
+            os.system(cmdstring)
+
 
 class AnnGenotypeFactory(object):
     def __init__(self, population):
