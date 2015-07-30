@@ -24,6 +24,8 @@ for opt, arg in opts:
     elif opt in ('-t', '--threadnum'):
         num_threads = int(arg)
 
+current_time = datetime.datetime.now()
+
 param = {
         'pop_size' : 10,
         'mutation_rate' : 0.1,
@@ -34,7 +36,8 @@ param = {
         'ann_output' : 4,
         'cell_scale' : 50,
         'inputs' : ['worlds/corner.test', 'worlds/line.test', 'worlds/squiggle.test'],
-        'random_seed' : datetime.datetime.now(),
+        'random_seed' : int(current_time.strftime('%s')),
+        'time' : current_time,
         'num_gens' : 2000,
         'printer_runtime' : 300,
         'printer_speed' : 2700
