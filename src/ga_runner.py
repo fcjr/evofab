@@ -4,10 +4,10 @@ import datetime
 import getopt
 import sys
 
-helptext = 'ga_runner.py -v -d -t threadnum'
+helptext = 'ga_runner.py -v -d -t threadnum -o outputfolder'
 
 try:
-    opts, args = getopt.getopt(sys.argv[1:], "vdt:", ["visual", "dumping", "threadnum="])
+    opts, args = getopt.getopt(sys.argv[1:], "vdt:o:", ["visual", "dumping", "threadnum=", "outputfolder="])
 except getopt.GetoptError:
     print helptext
     assert True == False
@@ -15,6 +15,7 @@ except getopt.GetoptError:
 is_visual = False
 is_dumping = False
 num_threads = 5
+outputfolder = 'data/'
 
 for opt, arg in opts:
     if opt in ('-v', '--visual'):
@@ -23,6 +24,8 @@ for opt, arg in opts:
         is_dumping = True
     elif opt in ('-t', '--threadnum'):
         num_threads = int(arg)
+    elif opt in ('-o', '--outputfolder'):
+        outputfolder = arg
 
 current_time = datetime.datetime.now()
 
@@ -44,7 +47,7 @@ param = {
         }
 
 if is_dumping:
-    with open('gens/TEST_INFO', 'w') as outputfile:
+    with open(outputfolder + 'TEST_INFO', 'w') as outputfile:
         for key, val in param.items():
             outputfile.write(key + ' : ' + str(val) + '\n')
 
@@ -62,5 +65,6 @@ population = AnnPopulation(
         [Grid(scale=param['cell_scale'], path=val) for val in param['inputs']],
         is_visual=is_visual,
         dump_to_files=is_dumping,
+        outputfolder=outputfolder,
         )
 population.iterate(param['num_gens'], num_threads)

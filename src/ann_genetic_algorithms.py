@@ -7,11 +7,12 @@ import os
 import csv
 
 statsfileheader = ['gen num', 'min', 'max', 'median']
+curbest_filename = 'curbest.ann'
 
 class AnnPopulation(Population):
 
-    def __init__(self, random_seed, printer_runtime, printer_speed, size, mutation_rate, mutation_range, replacement_number, num_input, num_hidden, num_output, goal, outputfolder='gens/', is_visual=True, dump_to_files=False):
-        super(AnnPopulation, self).__init__(random_seed, size, mutation_rate, mutation_range, replacement_number, num_input, num_hidden, num_output, goal, outputfolder='gens/')
+    def __init__(self, random_seed, printer_runtime, printer_speed, size, mutation_rate, mutation_range, replacement_number, num_input, num_hidden, num_output, goal, outputfolder='data/', is_visual=True, dump_to_files=False):
+        super(AnnPopulation, self).__init__(random_seed, size, mutation_rate, mutation_range, replacement_number, num_input, num_hidden, num_output, goal, outputfolder)
         self.printer_runtime = printer_runtime
         self.printer_speed = printer_speed
         random.seed(random_seed)
@@ -36,13 +37,8 @@ class AnnPopulation(Population):
     def output(self, gen):
         if self.dump_to_files:
             self.sort_by_fitness()
-            filename = self.outputfolder + 'best-gen-'+str(gen)+'.ann'
             member = self.members[-1]
-            ann_io.save(member.ann, filename)
-            
-            cmdstring = 'ln -f ' + filename + ' ' + self.outputfolder + 'curbest.ann'
-            print cmdstring
-            os.system(cmdstring)
+            ann_io.save(member.ann, self.outputfolder + curbest_filename)
 
 class AnnGenotypeFactory(object):
     def __init__(self, population):
