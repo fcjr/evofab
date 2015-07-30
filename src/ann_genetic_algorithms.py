@@ -23,7 +23,7 @@ class AnnPopulation(Population):
             member = self.members[-1]
             ann_io.save(member.ann, filename)
             
-            cmdstring = 'ln -s -f ' + filename + ' curbest.ann'
+            cmdstring = 'ln -f ' + filename + ' ' + self.outputfolder + 'curbest.ann'
             print cmdstring
             os.system(cmdstring)
 
