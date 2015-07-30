@@ -22,10 +22,6 @@ class AnnPopulation(Population):
             filename = self.outputfolder + 'best-gen-'+str(gen)+'.ann'
             member = self.members[-1]
             ann_io.save(member.ann, filename)
-#            for member_num, member in enumerate(self.members):
-#                filename = self.outputfolder + 'g%d_m%d' % (gen, member_num)
-#                ann_io.save(member.ann, filename)
-
             
             cmdstring = 'ln -s -f ' + filename + ' curbest.ann'
             print cmdstring
