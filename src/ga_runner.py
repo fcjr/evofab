@@ -52,6 +52,13 @@ if is_dumping:
     with open(outputfolder + 'TEST_INFO', 'w') as outputfile:
         for key, val in param.items():
             outputfile.write(key + ' : ' + str(val) + '\n')
+        for gridfile in param['inputs']:
+            outputfile.write('\n========================\n')
+            outputfile.write(gridfile + '\n\n')
+            with open(gridfile, 'r') as to_read:
+                for line in to_read:
+                    outputfile.write(line)
+            outputfile.write('\n========================\n')
 
 population = AnnPopulation(
         param['random_seed'],
