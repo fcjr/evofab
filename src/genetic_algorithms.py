@@ -6,16 +6,22 @@ from multiprocessing import Process, Queue
 class Hat(object):
 
     def __init__(self, population):
-        self.tickets = []
-        for member in population:
-            for i in range(member.fitness):
-                self.tickets.append(member)
+        self.population = population
+        self.ranges = []
+        self.ranges.append(population[0].fitness) 
+        for member in population[1:]:
+            self.ranges.append(self.ranges[-1] + member.fitness)
 
     def pull(self):
-        return self.tickets[random.randint(0, len(self.tickets) -1)]
+        choice = random.randint(0, len(self.ranges) -1)
+        i = 0
+        while (choice - self.ranges[i]) >= 0:
+            choice -= self.ranges[i]
+            i += 1
+        return self.population[i]
 
     def size(self):
-        return len(self.tickets)
+        return sum(self.ranges)
 
 class GenericGenotypeFactory(object):
     def __init__(self, population):
