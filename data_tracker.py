@@ -45,9 +45,9 @@ def get_file():
     if remote:
         assert datadir != 'data/'
         os.system('rsync -avzhe ssh ' + user + '@' + host + ':' + datadir + '/data/' + ' ' + tmpdir_name)
-        return tmpdir_name + 'stats.ann'
+        return tmpdir_name + 'stats.csv'
     else:
-        return 'data/stats.ann'
+        return 'data/stats.csv'
 
 def clean():
     if remote:
@@ -72,26 +72,32 @@ mins = [row[1] for row in gen_vals]
 medians = [row[3] for row in gen_vals]
 last_gen_num = gen_vals[-1][0]
 xax = range(last_gen_num + 1)
-plt.plot(xax, maxs, 'g-', xax, mins, 'r-', xax, medians, 'b-')
+pmax = plt.plot(xax, maxs, 'g-', label='max')
+pmin = plt.plot(xax, mins, 'r-', label='min')
+pmedian = plt.plot(xax, medians, 'b-', label='median')
+plt.legend()
 plt.axis([0, last_gen_num + 1, 0, 2 * max(maxs)])
 plt.draw()
 plt.pause(refresh_time)
 while True:
-    improved_last_check = False
     with open(get_file(), 'r') as inputfile:
         reader = csv.reader(inputfile)
         reader.next()
         gen_vals = [map(int, row) for row in reader]
         if gen_vals[-1][0] > last_gen_num:
-            improved_last_check = True
+            improved_last_check = False
             last_gen_num = gen_vals[-1][0]
             maxs.append(gen_vals[-1][2])
             mins.append(gen_vals[-1][1])
             medians.append(gen_vals[-1][3])
+            if maxs[-1] > maxs[-2]:
+                improved_last_check = True
             xax = range(last_gen_num + 1)
-            plt.plot(xax, maxs, 'g-', xax, mins, 'r-', xax, medians, 'b-')
+            pmax = plt.plot(xax, maxs, 'g-', label='max')
+            pmin = plt.plot(xax, mins, 'r-', label='min')
+            pmedian = plt.plot(xax, medians, 'b-', label='median')
             plt.axis([0, last_gen_num + 1, 0, 2 * max(maxs)])
+            info_text(improved_last_check)
         plt.draw()
-        info_text(improved_last_check)
         plt.pause(refresh_time)
     clean()
