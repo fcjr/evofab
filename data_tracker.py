@@ -36,6 +36,9 @@ for opt, arg in opts:
 last_gen_num = -1
 maxs = []
 
+fig = plt.gcf()
+fig.canvas.set_window_title('(FGP) Remote Monitor')
+
 textobject = plt.text(10, 100, 'improving?', bbox=dict(facecolor='white', alpha=0.5))
 
 def get_file():
@@ -65,8 +68,11 @@ while len(gen_vals) < 1:
         gen_vals = [map(int, row) for row in reader1]
     clean()
 maxs = [row[2] for row in gen_vals]
+mins = [row[1] for row in gen_vals]
+medians = [row[3] for row in gen_vals]
 last_gen_num = gen_vals[-1][0]
-plt.plot(range(last_gen_num + 1), maxs)
+xax = range(last_gen_num + 1)
+plt.plot(xax, maxs, 'g-', xax, mins, 'r-', xax, medians, 'b-')
 plt.axis([0, last_gen_num + 1, 0, 2 * max(maxs)])
 plt.draw()
 plt.pause(refresh_time)
@@ -77,11 +83,14 @@ while True:
         reader.next()
         gen_vals = [map(int, row) for row in reader]
         if gen_vals[-1][0] > last_gen_num:
-            maxs.append(gen_vals[-1][2])
-            last_gen_num = gen_vals[-1][0]
-            plt.plot(range(last_gen_num + 1), maxs)
-            plt.axis([0, last_gen_num + 1, 0, 2 * max(maxs)])
             improved_last_check = True
+            last_gen_num = gen_vals[-1][0]
+            maxs.append(gen_vals[-1][2])
+            mins.append(gen_vals[-1][1])
+            medians.append(gen_vals[-1][3])
+            xax = range(last_gen_num + 1)
+            plt.plot(xax, maxs, 'g-', xax, mins, 'r-', xax, medians, 'b-')
+            plt.axis([0, last_gen_num + 1, 0, 2 * max(maxs)])
         plt.draw()
         info_text(improved_last_check)
         plt.pause(refresh_time)
