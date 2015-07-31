@@ -42,8 +42,8 @@ param = {
         'random_seed' : int(current_time.strftime('%s')),
         'time' : current_time,
         'num_gens' : 8000,
-        'printer_runtime' : 300,
-        'printer_speed' : 2700,
+        'printer_runtime' : 200,
+        'printer_speed' : 4050,
         'reward_for_correct' : 20,
         'punishment_for_incorrect': 1,
         }
