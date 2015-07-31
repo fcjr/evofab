@@ -25,7 +25,7 @@ class AnnPopulation(Population):
         self.init_csv_writer()
 
     def init_csv_writer(self):
-        with open(self.outputfolder + statsfile_filename, 'a') as statsfile:
+        with open(self.outputfolder + statsfile_filename, 'w') as statsfile:
             writer = csv.writer(statsfile)
             writer.writerow(statsfileheader)
 
