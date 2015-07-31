@@ -37,9 +37,9 @@ def get_file():
     if remote:
         assert datadir != 'data/'
         os.system('rsync -avzhe ssh ' + user + '@' + host + ':' + datadir + '/data/' + ' ' + tmpdir_name)
-        return tmpdir_name + 'stats.ann'
+        return tmpdir_name + 'stats.csv'
     else:
-        return 'data/stats.ann'
+        return 'data/stats.csv'
 
 def clean():
     if remote:
