@@ -8,7 +8,7 @@ import csv
 
 statsfileheader = ['gen num', 'min', 'max', 'median']
 curbest_filename = 'curbest.ann'
-statsfile_filename = 'stats.ann'
+statsfile_filename = 'stats.csv'
 
 class AnnPopulation(Population):
 
