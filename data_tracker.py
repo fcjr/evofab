@@ -2,27 +2,44 @@ import matplotlib.pyplot as plt
 import csv
 import os
 import sys
+import getopt
 
+
+helptext = 'data_tracker.py -d data_dir -r -u user -h host'
+
+try:
+    opts, args = getopt.getopt(sys.argv[1:], "d:ru:h::", ['dir=', 'remote', 'user=', 'host='])
+except getopt.GetoptError:
+    print helptext
 
 tmpdir_name = 'tracker_tmp/'
+datadir = 'data/'
+remote = False
+user = 'petersoj'
+host = 'jupiter'
+
+for opt, arg in opts:
+    if opt in ('-d', '--dir'):
+        datadir = arg
+    elif opt in ('-r', '--remote'):
+        remote = True
+    elif remote:
+        if opt in ('-u', '--user'):
+            user = arg
+        elif opt in ('-h', '--host'):
+            host = arg
 
 last_gen_num = -1
 maxs = []
 
-remote = False
-remote_dir = None
-if sys.argv[1] == '-r':
-    remote_dir = sys.argv[2]
-    remote = True
-
 def get_file():
     print 'getting'
     if remote:
-        assert remote_dir != None
-        os.system('rsync -avzhe ssh petersoj@jupiter.union.edu:' + remote_dir + 'data/' + ' ' + tmpdir_name)
-        return tmpdir_name + 'stats.csv'
+        assert datadir != 'data/'
+        os.system('rsync -avzhe ssh ' + user + '@' + host + ':' + datadir + '/data/' + ' ' + tmpdir_name)
+        return tmpdir_name + 'stats.ann'
     else:
-        return 'data/stats.csv'
+        return 'data/stats.ann'
 
 def clean():
     if remote:
