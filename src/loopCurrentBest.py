@@ -26,4 +26,4 @@ while(True):
 	n = ann_io.load(ann_file)
 	ideal_grid = Grid(scale=50, path=world_file)
 	runner = GuiAnnRunner(ideal_grid)
-	runner.run(n, iterations=1000, x=10, y=4)
+	runner.run(n, iterations=1000)

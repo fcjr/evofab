@@ -166,4 +166,4 @@ class Member:
     def express(self):
         self.ann.allConnections = self.weights
         runner = AnnRunner(self.population.goal)
-        return runner.run(self.ann, iterations=600, x=325, y=175)
+        return runner.run(self.ann, iterations=600)

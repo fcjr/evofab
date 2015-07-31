@@ -27,4 +27,4 @@ for opt, arg in opts:
 n = ann_io.load(ann_file)
 ideal_grid = Grid(scale=50, path=world_file)
 runner = GuiAnnRunner(ideal_grid)
-runner.run(n, iterations=num_iterations, x=10, y=4)
+runner.run(n, iterations=num_iterations)

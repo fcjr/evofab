@@ -89,6 +89,6 @@ class AnnGenotype(Genotype):
                 runner = GuiAnnRunner(world)
             else:
                 runner = AnnRunner(world)
-            ideal_grid, actual_grid = runner.run(self.ann, iterations=self.population.printer_runtime, printer_speed=self.population.printer_speed, x=10, y=4)
+            ideal_grid, actual_grid = runner.run(self.ann, iterations=self.population.printer_runtime, printer_speed=self.population.printer_speed)
             result.append((ideal_grid.grid, actual_grid.grid))
         return result

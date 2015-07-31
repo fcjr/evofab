@@ -18,8 +18,8 @@ class AnnRunner(object):
         width = self.gridworld.width() * self.gridworld.gridsize()
         height = self.gridworld.height() * self.gridworld.gridsize()
 
-    def run(self, n, x=0, y=0, iterations=10000, printer_speed=300):
-        self.printer.set_position_on_grid(x, y)
+    def run(self, n, iterations=10000, printer_speed=300):
+        self.printer.set_position_on_grid(self.ideal_grid.starting_point[0], self.ideal_grid.starting_point[1])
         for i in xrange(iterations):
             self.printer.setPenDown()
             actual = self.camera.all_cell_values()
