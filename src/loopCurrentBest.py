@@ -11,7 +11,7 @@ try:
     opts, args = getopt.getopt(sys.argv[1:], "A:W:", ["ANNfile=", "Worldfile="])
 except getopt.GetoptError:
     print helptext
-    assert False == True
+    sys.exit()
 
 ann_file = None
 world_file = None

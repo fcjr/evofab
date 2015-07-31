@@ -10,7 +10,7 @@ try:
     opts, args = getopt.getopt(sys.argv[1:], "vdt:o:", ["visual", "dumping", "threadnum=", "outputfolder="])
 except getopt.GetoptError:
     print helptext
-    assert True == False
+    sys.exit()
 
 is_visual = False
 is_dumping = False

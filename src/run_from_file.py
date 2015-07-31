@@ -10,7 +10,7 @@ try:
     opts, args = getopt.getopt(sys.argv[1:], "A:W:t:", ["ANNfile=", "Worldfile=", "time="])
 except getopt.GetoptError:
     print helptext
-    assert True == False
+    sys.exit()
 
 ann_file = None
 world_file = None

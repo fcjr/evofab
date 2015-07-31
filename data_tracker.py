@@ -11,6 +11,7 @@ try:
     opts, args = getopt.getopt(sys.argv[1:], "d:ru:h::", ['dir=', 'remote', 'user=', 'host='])
 except getopt.GetoptError:
     print helptext
+    sys.exit()
 
 tmpdir_name = 'tracker_tmp/'
 datadir = 'data/'
