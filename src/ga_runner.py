@@ -31,14 +31,14 @@ current_time = datetime.datetime.now()
 
 param = {
         'pop_size' : 400,
-        'mutation_rate' : 0.1,
+        'mutation_rate' : 0.05,
         'mutation_range' : (-10, 10),
         'cull_num' : 320,
         'ann_input' : 9,
-        'ann_hidden' : 9,
+        'ann_hidden' : 16,
         'ann_output' : 4,
         'cell_scale' : 50,
-        'inputs' : ['worlds/corner.test', 'worlds/line.test', 'worlds/squiggle.test'],
+        'inputs' : ['worlds/angles1.test', 'worlds/angles2.test', 'worlds/angles3.test', 'worlds/v.test', 'worlds/squiggle1.test'],
         'random_seed' : int(current_time.strftime('%s')),
         'time' : current_time,
         'num_gens' : 8000,
@@ -46,6 +46,7 @@ param = {
         'printer_speed' : 4050,
         'reward_for_correct' : 20,
         'punishment_for_incorrect': 1,
+        'crossover_rate': .3
         }
 
 if is_dumping:
@@ -67,6 +68,7 @@ population = AnnPopulation(
         param['pop_size'],
         param['mutation_rate'],
         param['mutation_range'],
+        param['crossover_rate'],
         param['cull_num'],
         param['ann_input'], 
         param['ann_hidden'],

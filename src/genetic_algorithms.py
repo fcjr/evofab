@@ -32,10 +32,11 @@ class GenericGenotypeFactory(object):
 
 class Population(object):
 
-    def __init__(self, random_seed, size, mutation_rate, mutation_range, replacement_number, num_input, num_hidden, num_output, goal, outputfolder='gens/'):
+    def __init__(self, random_seed, size, mutation_rate, mutation_range, crossover_rate, replacement_number, num_input, num_hidden, num_output, goal, outputfolder='gens/'):
         random.seed(random_seed)
         self.genotype_factory = GenericGenotypeFactory(self)
         self.outputfolder = outputfolder
+        self.crossover_rate = crossover_rate
         self.size = size
         self.replacement_number = replacement_number
         self.mutation_rate = mutation_rate
@@ -114,10 +115,19 @@ class Population(object):
     def breed(self):
         hat = Hat(self.members)
         children = []
-        for i in range(self.replacement_number):
+        num_crossover = int(self.replacement_number * self.crossover_rate)
+        print num_crossover
+        print self.replacement_number - num_crossover
+        print num_crossover + (self.replacement_number - num_crossover)
+        for i in range(num_crossover):
             current_member = hat.pull()
             child = self.genotype_factory.new()
             child.crossover(current_member, self.get_random_other_member(current_member))
+            children.append(child)
+        for i in range(self.replacement_number - num_crossover):
+            current_member = hat.pull()
+            child = self.genotype_factory.new()
+            child.values = [x for x in current_member.values]
             child.mutate()
             children.append(child)
         self.members = children + self.members
