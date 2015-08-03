@@ -26,7 +26,7 @@ for opt, arg in opts:
     elif opt in ('-r', '--remote'):
         remote = True
     elif opt in ('-t', '--time'):
-        refresh_time = int(arg)
+        refresh_time = float(arg)
     elif remote:
         if opt in ('-u', '--user'):
             user = arg
@@ -80,6 +80,7 @@ plt.axis([0, last_gen_num + 1, 0, 2 * max(maxs)])
 plt.draw()
 plt.pause(refresh_time)
 while True:
+    count = 0
     with open(get_file(), 'r') as inputfile:
         reader = csv.reader(inputfile)
         reader.next()
@@ -100,4 +101,6 @@ while True:
             info_text(improved_last_check)
         plt.draw()
         plt.pause(refresh_time)
-    clean()
+    count += 1
+    if count >= 5:
+        clean()
