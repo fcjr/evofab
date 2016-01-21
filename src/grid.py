@@ -1,11 +1,3 @@
-def load_grid_from_file(path):
-    grid = []
-    with open(path, 'r') as to_read:
-        for line in to_read:
-            grid.append([])
-            for char in line.strip():
-                grid[-1].append(int(char))
-    return grid
 
 class Grid:
     """Operates as a grid with values"""
@@ -16,11 +8,12 @@ class Grid:
     def __init__(self,wid=None,hi=None,scale=None, path=None):
         """can either be constructed with a width, height, and scale (init to empty)
         or with a scale and a path"""
+        self.starting_point = None
         if not scale:
             #you have to provide a scale and if you don't this should break things
             assert(1 == 2) #TODO: do this with an exception
         if path:
-            self.grid = load_grid_from_file(path)
+            self.grid = self.load_grid_from_file(path)
             grid = self.grid
             self.height = len(grid)
             self.width = len(grid[0])
@@ -31,18 +24,35 @@ class Grid:
             self.gridsize = scale
             self.grid = [[self.empty for x in xrange(self.width)] for x in xrange(self.height)]
 
+    def load_grid_from_file(self, path):
+        grid = []
+        with open(path, 'r') as to_read:
+            y = 0
+            for line in to_read:
+                grid.append([])
+                x = 0
+                for char in line.strip():
+                    if char == 'S':
+                        self.starting_point = (x, y)
+                        grid[-1].append(1)
+                    else:
+                        grid[-1].append(int(char))
+                    x += 1
+                y += 1
+        return grid
+
     def val_at(self, x, y):
-        return self.grid[x][y]
+        return self.grid[y][x]
 
     def val_at_vector(self, vector):
         return self.grid[vector.x][vector.y]
 
     def set_loc_val(self, x, y, val):
-        self.grid[x][y] = val
+        self.grid[y][x] = val
 
     def inbounds(self,p):
         (x,y) = p
-        return (x >= 0) and (x < self.width*self.gridsize) and (y >= 0) and (y < self.height*self.gridsize)
+        return (x > 1.5 * self.gridsize) and (x < (self.width - 1.5) * self.gridsize) and (y > 1.5 * self.gridsize) and (y < (self.height - 1.5) * self.gridsize)
 
     #TODO: this shouldn't be here. should be in the visual grid. same with `scale` variable
     def find_closest_gridloc(self,p):

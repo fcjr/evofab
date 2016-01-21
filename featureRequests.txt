@@ -1,0 +1,72 @@
+DONE
+----
+
+    - (1) Refactoring:
+    --  make a Population superclass and a Genotype superclass
+    ----- make the ann/printer stuff a subclass of this.
+    -- cleaning up code should mean that you don't need so much code duplicated between the pygame and no-pygame versions. 
+            -- can import in an if statement!!! see below
+    --  there should be a way to do optional or environment-dependent includes (one file to rule them all for with/without pygame)
+
+    -- wrap any code meant to be a "main" inside of the if __main__ syntax of python.
+
+    -- by default don't save data, make it a command-line option
+    ----- when you do save data, save random seed and version of code, or at least date.  
+            -- also need to save any variable that influences the output (so that we can recreate things)
+                -- at the very least give everything a variable name
+
+    ----- usually I just have date and random seed as part of filename, or use a header
+                -- pickle the outputs
+                -- have an info file in the output dir
+
+    (2) Be sure that we're saving the best genotype of every generation
+
+    - (1) GA Stuff: 
+    -- why is location2 of xover fixed at half of genome?  just pick two random locations.
+
+    General Concerns:
+    - there doesn't seem to be much richness to the fitness function, and that
+      is very strange.  Need to run it with visualization on to see more
+      clearly.
+        --try giving it 20 points for everywhere it should have material and it does
+        -subtract one point for every place there's material where there shouldn't be
+
+        -- give it a test suite for fitness (run it on three shapes)! ask question about cumulative fitness
+
+    BUGLIST:
+    - code currently evaluates EVERY individual in pop every generation, which means that it re-evaluates kept members.  You can fix this by:
+    -- only calling eval() when initializing new population and when adding new children.
+    - problems with threads and indexing of population.
+    - weights are currently INTS instead of floats.
+
+
+TO DO
+-----
+
+- (2) have display window persistent, rather than popping up a new one every evaluation
+- (2) integrated debugger
+	-- shared debug object, with varying levels of screen/file logging
+    - persistant debug object
+        -- instead of printing, pass stuff to the debugger and the debugger keeps track of verbosity (and decides how much spam to dump to STDOUT)
+- (2)integrated display manager
+	-- when to display graphics
+	-- once per frame
+	-- once per individual
+	-- best of every generation
+
+    -- sliding scale
+        -displaying every frame
+        to
+        -displaying just the result of the individual
+        to
+        -just displaying the best of every gen
+
+- (2) Tools to Parse Data
+-- - Write a scipy/numpy GA Watcher program, that turns the data being spewed by various processes into a sexy graph in real time.
+    -- entirely separate program that parses data files as they're being written
+- (3) Learn to Profile python
+
+- (3) Worry about diversity? Measure it first.  I have some code snippets I hacked on the plane that I can share.
+
+
+

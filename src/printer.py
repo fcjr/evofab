@@ -1,25 +1,21 @@
-##
-## Author: Kristina Striegnitz
-##
-## Version: Fall 2011 
-##
-## This character has an FMS that allows it to go back and forth
-## between two states: waiting and following a given path. The path is
-## specified as a sequence of points and the character uses seek
-## behavior to get from one point to the next.
-##
-
-import pygame
-from moving_ball_2d import MovingBall
 from vector import Vector
 
-class VirtualPrinter(MovingBall):
+class Printer(object):
 
-    def __init__ (self, x, y, r, m, color, grid):
-
-        MovingBall.__init__(self, x, y, r, color, 0, 0)
+    def __init__ (self, x, y, r, m, grid, xv=0, yv=0):
+        self.position = Vector(float(x), float(y))
+        self.r = r
+        self.v = Vector(float(xv),float(yv))
         self.grid = grid
         self.penDown = False
+
+    def set_position_on_grid(self, xcell, ycell):
+        self.position = Vector((xcell * self.grid.gridsize()) + self.grid.gridsize()/2, (ycell * self.grid.gridsize())+ self.grid.gridsize()/2)
+
+    def stop_v (self):
+        """ Reset the velocity to 0 if it gets very close. """
+        if self.v.length() < 3:
+            self.v = Vector (0,0)
         
     def move (self, dt):
         self.stop_v ()
