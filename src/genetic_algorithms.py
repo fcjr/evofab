@@ -65,11 +65,11 @@ class Population(object):
         for i in xrange(num_iterations):
             print "evaluating generation %d" % (i + 1)
             self.cull()
-            self.write_stats(i)
             children = self.breed()
             self.eval_fitness(children, threadnum)
             self.print_fitnesses()
             self.output(i)
+            self.write_stats(i)
 
     def print_fitnesses(self):
         fitnesses = [member.fitness for member in self.members]
