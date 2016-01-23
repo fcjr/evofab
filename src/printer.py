@@ -2,24 +2,19 @@ from vector import Vector
 
 class Printer(object):
 
-    def __init__ (self, x, y, r, m, grid, xv=0, yv=0):
+    def __init__ (self, x, y, r, m, grid, move_units_per_cell):
         self.position = Vector(float(x), float(y))
         self.r = r
-        self.v = Vector(float(xv),float(yv))
+        move_unit_pixels = grid.gridsize() / move_units_per_cell
+        self.v = Vector(move_unit_pixels, move_unit_pixels)
         self.grid = grid
         self.penDown = False
 
     def set_position_on_grid(self, xcell, ycell):
         self.position = Vector((xcell * self.grid.gridsize()) + self.grid.gridsize()/2, (ycell * self.grid.gridsize())+ self.grid.gridsize()/2)
 
-    def stop_v (self):
-        """ Reset the velocity to 0 if it gets very close. """
-        if self.v.length() < 3:
-            self.v = Vector (0,0)
-        
-    def move (self, dt):
-        self.stop_v ()
-        self.position = self.position.plus(self.v.times(float(dt)/1000))
+    def move (self):
+        self.position = self.position.plus(self.v)
               
     def setPenUp(self):
         self.penDown = False
@@ -27,16 +22,16 @@ class Printer(object):
     def setPenDown(self):
         self.penDown = True
 
-    def simulate(self,dt):
-        if self.move_is_valid(dt):
-            self.move(dt)
+    def simulate(self):
+        if self.move_is_valid():
+            self.move()
             if self.penDown:
                 position = (self.position.x, self.position.y)
                 self.grid.PenDraw(position)
 
-    def move_is_valid(self, dt):
+    def move_is_valid(self):
         """ Checks if moving with the given dt will cause collision with
             the boundaries of the grid """
-        new_loc = self.position.plus(self.v.times(float(dt)/1000))
+        new_loc = self.position.plus(self.v)
         new_loc = (new_loc.x, new_loc.y)
         return self.grid.inbounds(new_loc)

@@ -16,8 +16,8 @@ color = pygame.color.Color("darkorange")
 
 class GuiPrinter(Printer):
 
-    def __init__ (self, x, y, r, m, grid, xv=0, yv=0):
-        super(GuiPrinter, self).__init__(x, y, r, m, grid, xv, yv)
+    def __init__ (self, x, y, r, m, grid, move_units_per_cell):
+        super(GuiPrinter, self).__init__(x, y, r, m, grid, move_units_per_cell)
         self.color = color
         
     def draw (self, window):

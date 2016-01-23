@@ -43,7 +43,7 @@ param = {
         'time' : current_time,
         'num_gens' : 8000,
         'printer_runtime' : 200,
-        'printer_speed' : 4050,
+        'units_per_cell' : 10,
         'reward_for_correct' : 20,
         'punishment_for_incorrect': 1,
         'crossover_rate': .3
@@ -64,7 +64,7 @@ if is_dumping:
 population = AnnPopulation(
         param['random_seed'],
         param['printer_runtime'],
-        param['printer_speed'],
+        param['units_per_cell'],
         param['pop_size'],
         param['mutation_rate'],
         param['mutation_range'],
