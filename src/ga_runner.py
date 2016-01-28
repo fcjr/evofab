@@ -3,6 +3,8 @@ from grid import Grid
 import datetime
 import getopt
 import sys
+import os
+import errno
 
 helptext = 'ga_runner.py -v -d -t threadnum -o outputfolder'
 
@@ -50,6 +52,15 @@ param = {
         }
 
 if is_dumping:
+    outputfolder = outputfolder.strip()
+    if outputfolder[-1] != "/":
+        outputfolder = outputfolder + "/"
+    if not os.path.isdir(outputfolder):
+        try:
+            os.makedirs(outputfolder)
+        except OSError as exc: # Guard against race condition
+            if exc.errno != errno.EEXIST:
+                raise
     with open(outputfolder + 'TEST_INFO', 'w') as outputfile:
         for key, val in param.items():
             outputfile.write(key + ' : ' + str(val) + '\n')
@@ -70,7 +81,7 @@ population = AnnPopulation(
         param['mutation_range'],
         param['crossover_rate'],
         param['cull_num'],
-        param['ann_input'], 
+        param['ann_input'],
         param['ann_hidden'],
         param['ann_output'],
         param['reward_for_correct'],

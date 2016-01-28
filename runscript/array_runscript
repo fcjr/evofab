@@ -1,11 +1,11 @@
-#PBS -l nodes=1:ppn=1
-#PBS -l walltime=30:00
+#PBS -l nodes=1:ppn=12
+#PBS -l walltime=6:00:00
 #PBS -j oe
-#PBS -N runanntrainer
+#PBS -N ga_annevolution
 #PBS -m e
 
 if [ "$PBS_ENVIRONMENT" != "PBS_INTERACTIVE" ] ; then
     cd $PBS_O_WORKDIR
 fi
 
-/usr/local/bin/python src/train_to_file.py outputfile$PBS_ARRAYID 1000 training_sets/corner
+/usr/local/bin/python src/ga_runner.py -dt 12 -o $HOME/data/`date '+%m_%d_%y-%H'`$PBS_ARRAYID
