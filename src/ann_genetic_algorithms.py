@@ -67,7 +67,7 @@ class AnnGenotype(Genotype):
             rand_num = random.randint(0, 99)
             if rand_num < rate:
                 lower, upper = self.population.mutation_range
-                self.values[i] = random.randrange(lower, upper)
+                self.values[i] = random.uniform(lower, upper)
 
     def calculate_fitness(self, q=None):
         phenotype = self.express()
