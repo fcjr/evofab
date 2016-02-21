@@ -81,6 +81,8 @@ class AnnGenotype(Genotype):
                         fitness -= self.population.punishment_for_incorrect
         if q:
             q.put((self.values, fitness))
+        else:
+            self.fitness = fitness
 
     def express(self):
         result = []

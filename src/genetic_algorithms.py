@@ -8,7 +8,7 @@ class Hat(object):
     def __init__(self, population):
         self.population = population
         self.ranges = []
-        self.ranges.append(population[0].fitness) 
+        self.ranges.append(population[0].fitness)
         for member in population[1:]:
             self.ranges.append(self.ranges[-1] + member.fitness)
 
@@ -78,32 +78,35 @@ class Population(object):
 
     def output(self, gen):
         return
-                    
+
     def eval_fitness(self, members, threadnum):
         q = Queue()
         counter = 0
-        for iteration in range(0, len(members), threadnum):
-            processes = []
-            print 'evaluating members %d - %d of %d' % (counter + 1, counter + threadnum, len(members))
-            while len(processes) < threadnum and counter + len(processes) < len(members):
-                member = members[iteration + len(processes)]
-                p = Process(target=member.calculate_fitness, args=(q,))
-                p.start()
-                processes.append(p)
-            for p in processes:
-                p.join()
-            while not q.empty():
-                actual_vals, fitness = q.get()
-                possible_members = members[counter:counter + threadnum]
-                member_num = 0
-                found = False
-                while member_num < threadnum and not found:
-                    if actual_vals == possible_members[member_num].values:
-                        found = True
-                        possible_members[member_num].fitness = fitness
-                    member_num += 1
-                members[counter].fitness 
-            counter += threadnum
+        for m in members:
+            m.calculate_fitness()
+        # TODO: um this looks like it might have been causing... Problems.
+        # for iteration in range(0, len(members), threadnum):
+        #     processes = []
+        #     print 'evaluating members %d - %d of %d' % (counter + 1, counter + threadnum, len(members))
+        #     while len(processes) < threadnum and counter + len(processes) < len(members):
+        #         member = members[iteration + len(processes)]
+        #         p = Process(target=member.calculate_fitness, args=(q,))
+        #         p.start()
+        #         processes.append(p)
+        #     for p in processes:
+        #         p.join()
+        #     while not q.empty():
+        #         actual_vals, fitness = q.get()
+        #         possible_members = members[counter:counter + threadnum] #might be missing one here
+        #         member_num = 0
+        #         found = False
+        #         while member_num < threadnum and not found:
+        #             if actual_vals == possible_members[member_num].values:
+        #                 found = True
+        #                 possible_members[member_num].fitness = fitness
+        #             member_num += 1
+        #         members[counter].fitness
+        #     counter += threadnum
 
     def cull(self):
         self.sort_by_fitness()
@@ -112,26 +115,42 @@ class Population(object):
     def sort_by_fitness(self):
         self.members.sort(key=lambda x: x.fitness)
 
+    def should_crossover(self):
+        pick = random.randint(0, 99)
+        return pick < (self.crossover_rate * 100)
+
     def breed(self):
+        assert(self.replacement_number % 2 == 0)
         hat = Hat(self.members)
         children = []
-        num_crossover = int(self.replacement_number * self.crossover_rate)
-        print num_crossover
-        print self.replacement_number - num_crossover
-        print num_crossover + (self.replacement_number - num_crossover)
-        for i in range(num_crossover):
-            current_member = hat.pull()
-            child = self.genotype_factory.new()
-            child.crossover(current_member, self.get_random_other_member(current_member))
-            children.append(child)
-        for i in range(self.replacement_number - num_crossover):
-            current_member = hat.pull()
-            child = self.genotype_factory.new()
-            child.values = [x for x in current_member.values]
-            child.mutate()
-            children.append(child)
-        self.members = children + self.members
+        #for debug
+        num_crossover = 0
+        num_mutated = 0
+        #end for debug
+        while len(children) < self.replacement_number:
+            p1 = hat.pull()
+            p2 = hat.pull()
+            c1 = self.genotype_factory.new()
+            c2 = self.genotype_factory.new()
+            if (self.should_crossover()):
+                c1.crossover(p1, p2)
+                c2.crossover(p2, p1) #TODO: does this do what i want?
+                num_crossover += 2
+            else:
+                c1.values = [x for x in p1.values] #TODO: should do this in a .clone() in the parent -- not like this...
+                c2.values = [x for x in p2.values]
+                c1.mutate()
+                c2.mutate()
+                num_mutated += 2
+            children.append(c1)
+            children.append(c2)
+        self.members += children
+        print "crossover rate", self.crossover_rate
+        print "num bred", num_crossover
+        print "num mutated", num_mutated
+        print "total", self.replacement_number
         return children
+
 
     def get_random_other_member(self, to_ignore):
         """ returns a random member of the population other than the member specified
@@ -139,7 +158,7 @@ class Population(object):
         members = [member for member in self.members if member != to_ignore]
         choice = random.choice(members)
         return choice
-        
+
 class Genotype(object):
     """ Generic genotype for GAs """
 
