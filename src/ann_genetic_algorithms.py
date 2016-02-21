@@ -25,19 +25,21 @@ class AnnPopulation(Population):
         self.init_csv_writer()
 
     def init_csv_writer(self):
-        with open(self.outputfolder + statsfile_filename, 'w') as statsfile:
-            writer = csv.writer(statsfile)
-            writer.writerow(statsfileheader)
+        if self.dump_to_files:
+            with open(self.outputfolder + statsfile_filename, 'w') as statsfile:
+                writer = csv.writer(statsfile)
+                writer.writerow(statsfileheader)
 
     def write_stats(self, gen):
-        with open(self.outputfolder + statsfile_filename, 'a') as statsfile:
-            self.sort_by_fitness()
-            min_fitness = self.members[0].fitness
-            max_fitness = self.members[-1].fitness
-            median_fitness = self.members[len(self.members)/2].fitness
-            writer = csv.writer(statsfile)
-            writer.writerow([gen, min_fitness, max_fitness, median_fitness])
-    
+        if self.dump_to_files:
+            with open(self.outputfolder + statsfile_filename, 'a') as statsfile:
+                self.sort_by_fitness()
+                min_fitness = self.members[0].fitness
+                max_fitness = self.members[-1].fitness
+                median_fitness = self.members[len(self.members)/2].fitness
+                writer = csv.writer(statsfile)
+                writer.writerow([gen, min_fitness, max_fitness, median_fitness])
+
     def output(self, gen):
         if self.dump_to_files:
             self.sort_by_fitness()
