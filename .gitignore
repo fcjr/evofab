@@ -1,4 +1,5 @@
 *.pyc
+*.dat
 *.ann
 runanntrainer.*
 tracker_tmp/
