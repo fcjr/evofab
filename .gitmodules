@@ -1,0 +1,3 @@
+[submodule "src/evocontroller"]
+	path = src/evocontroller
+	url = git://github.com/unionevorobo/evocontroller.git
