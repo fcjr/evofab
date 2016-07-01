@@ -3,6 +3,7 @@
 runanntrainer.*
 tracker_tmp/
 data/*
+*.swp
 
 
 #############

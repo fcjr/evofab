@@ -48,9 +48,9 @@ class PhysGenotype(AnnGenotype):
         """
 
         if instruction == "10":
-            return "+025"
+            return "+030"
         elif instruction == "01":
-            return "-025"
+            return "-030"
         else:
             return "+000"
 
@@ -63,17 +63,21 @@ class PhysGenotype(AnnGenotype):
         """
 
         start_time = time.time()
-        c = self.pop.controller
+        c = self.population.controller
         c.home()
         c.extrude()
-        while time.time() - start_time < self.pop.printer_runtime:
+        while time.time() - start_time < self.population.printer_runtime:
             #run the printer based on neural net responses
-            photo_array_values = self.sense.getNext()
-            result = self.ann.propogate(photo_array_values)
+            photo_array_values = self.population.sense.getNext()
+            result = self.ann.propagate(photo_array_values)
             result = [int(round(x)) for x in result]
             result = ''.join(map(str, result))
             #result are floats returned by the neural network
-            c.changeVelocity(self.get_velocity(result[:2] + self.get_velocity(result[2:])))
+            command = self.get_velocity(result[:2]) + self.get_velocity(result[2:])
+            result = c.changeVelocity(command)
+            while not result:
+                result = c.changeVelocity(command)
+                print command
         c.pause()
         c.testHome()
         return

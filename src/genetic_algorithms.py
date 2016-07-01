@@ -81,7 +81,8 @@ class Population(object):
     def eval_fitness(self, members, threadnum):
         q = Queue()
         counter = 0
-        for m in members:
+        for num, m in enumerate(members):
+            print "evaluating member: ", num
             m.calculate_fitness()
         # TODO: um this looks like it might have been causing... Problems.
         # for iteration in range(0, len(members), threadnum):
