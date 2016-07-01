@@ -12,11 +12,11 @@ statsfile_filename = 'stats.csv'
 
 class AnnPopulation(Population):
 
-    def __init__(self, random_seed, printer_runtime, units_per_cell, size, mutation_rate, mutation_range, crossover_rate, replacement_number, num_input, num_hidden, num_output, reward_for_correct, punishment_for_incorrect, goal, outputfolder='data/', is_visual=True, dump_to_files=False):
-        super(AnnPopulation, self).__init__(random_seed, size, mutation_rate, mutation_range, crossover_rate, replacement_number, num_input, num_hidden, num_output, goal, outputfolder)
+    def __init__(self, random_seed, printer_runtime, size, mutation_rate, mutation_range, crossover_rate, replacement_number, num_input, num_hidden, num_output, outputfolder, reward_for_correct=None, punishment_for_incorrect=None, goal=None, is_visual=True, dump_to_files=False, units_per_cell=0):
+        super(AnnPopulation, self).__init__(random_seed, size, mutation_rate, mutation_range, crossover_rate, replacement_number, num_input, num_hidden, num_output, outputfolder)
+        self.goal = goal
         self.printer_runtime = printer_runtime
         self.units_per_cell = units_per_cell
-        random.seed(random_seed)
         self.reward_for_correct = reward_for_correct
         self.punishment_for_incorrect = punishment_for_incorrect
         self.is_visual = is_visual
@@ -26,6 +26,8 @@ class AnnPopulation(Population):
 
     def init_csv_writer(self):
         if self.dump_to_files:
+            print("outputfolder: ", self.outputfolder)
+            print("statsfile_filename ", statsfile_filename)
             with open(self.outputfolder + statsfile_filename, 'w') as statsfile:
                 writer = csv.writer(statsfile)
                 writer.writerow(statsfileheader)
