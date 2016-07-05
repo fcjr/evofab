@@ -51,7 +51,7 @@ param = {
         'random_seed' : int(current_time.strftime('%s')),
         'time' : current_time,
         'num_gens' : 8000,
-        'printer_runtime' : 30,
+        'printer_runtime' : 10,
         'units_per_cell' : 10,
         'reward_for_correct' : 20,
         'punishment_for_incorrect': 1,

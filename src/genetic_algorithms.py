@@ -30,6 +30,7 @@ class GenericGenotypeFactory(object):
     def new(self):
         return Genotype(self.pop)
 
+
 class Population(object):
 
     def __init__(self, random_seed, size, mutation_rate, mutation_range, crossover_rate, replacement_number, num_input, num_hidden, num_output, outputfolder):

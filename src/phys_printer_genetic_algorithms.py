@@ -2,6 +2,10 @@ from ann_genetic_algorithms import AnnGenotype, AnnPopulation
 from genetic_algorithms import Population
 from evocontroller.evoPyLib.evoPyLib import *
 import time
+import sys
+import threading
+
+kbdInput = ""
 
 class PhysPopulation(AnnPopulation):
 
@@ -16,6 +20,8 @@ class PhysPopulation(AnnPopulation):
         #TODO: should probably test that sensor and controller serial ports are valid
         self.controller = EvoController(serial_port)
         self.sense = EvoArray(sensor_serial_port)
+        listener = threading.Thread(target=kbdListener)
+        listener.start()
 
 class PhysGenotypeFactory(object):
     def __init__(self, population):
@@ -23,6 +29,10 @@ class PhysGenotypeFactory(object):
     
     def new(self):
         return PhysGenotype(self.pop)
+
+def kbdListener():
+    global kbdInput
+    kbdInput = raw_input()
 
 class PhysGenotype(AnnGenotype):
 
@@ -39,7 +49,9 @@ class PhysGenotype(AnnGenotype):
         the fitness of the member. Returns that fitness as a float
         """
         phenotype = self.express()
-        #TODO: do openCV eval to produce fitness value
+        print("evaluating...")
+        self.population.controller.testHome()
+        #TODO: add evaluation code
         return
 
     def get_velocity(self, instruction):
@@ -62,22 +74,26 @@ class PhysGenotype(AnnGenotype):
         No return value expected
         """
 
-        start_time = time.time()
+        global kbdInput
         c = self.population.controller
+        #c.extrude()
         c.home()
-        c.extrude()
+        start_time = time.time()
         while time.time() - start_time < self.population.printer_runtime:
+            #if kbdInput == "q":
+            #    c.pause()
+            #    c.disable()
+            #    c.close()
+            #    sys.exit(0)
             #run the printer based on neural net responses
             photo_array_values = self.population.sense.getNext()
+            print photo_array_values
             result = self.ann.propagate(photo_array_values)
             result = [int(round(x)) for x in result]
             result = ''.join(map(str, result))
             #result are floats returned by the neural network
             command = self.get_velocity(result[:2]) + self.get_velocity(result[2:])
             result = c.changeVelocity(command)
-            while not result:
-                result = c.changeVelocity(command)
-                print command
+        print time.time() - start_time, "seconds elapsed"
         c.pause()
-        c.testHome()
         return
