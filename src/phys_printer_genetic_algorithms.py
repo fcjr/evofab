@@ -1,6 +1,7 @@
 from ann_genetic_algorithms import AnnGenotype, AnnPopulation
 from genetic_algorithms import Population
 from evocontroller.evoPyLib.evoPyLib import *
+from evocontroller.evoCamera.evoCamera import EvoCamera
 import time
 import sys
 import threading
@@ -14,12 +15,13 @@ class PhysPopulation(AnnPopulation):
     execution of the GA within members
     """
 
-    def __init__(self, random_seed, printer_runtime, size, mutation_rate, mutation_range, crossover_rate, replacement_number, num_input, num_hidden, num_output, serial_port, sensor_serial_port, outputfolder, is_visual=True, dump_to_files=False):
+    def __init__(self, random_seed, printer_runtime, size, mutation_rate, mutation_range, crossover_rate, replacement_number, num_input, num_hidden, num_output, serial_port, sensor_serial_port, camera, outputfolder, crop=True, is_visual=True, dump_to_files=False):
         super(PhysPopulation, self).__init__(random_seed, printer_runtime, size, mutation_rate, mutation_range, crossover_rate, replacement_number, num_input, num_hidden, num_output, outputfolder, is_visual=is_visual, dump_to_files=dump_to_files)
         self.genotype_factory = PhysGenotypeFactory(self)
         #TODO: should probably test that sensor and controller serial ports are valid
         self.controller = EvoController(serial_port)
         self.sense = EvoArray(sensor_serial_port)
+        self.camera = EvoCamera(camera, crop)
         listener = threading.Thread(target=kbdListener)
         listener.start()
 
@@ -51,8 +53,8 @@ class PhysGenotype(AnnGenotype):
         phenotype = self.express()
         print("evaluating...")
         self.population.controller.testHome()
-        #TODO: add evaluation code
-        return
+        fitness = self.population.camera.eval()
+        return fitness * 100
 
     def get_velocity(self, instruction):
         """Basic translation from expected outputs from the neural network

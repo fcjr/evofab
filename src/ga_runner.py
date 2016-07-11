@@ -10,7 +10,7 @@ import errno
 helptext = 'ga_runner.py -v -d -t threadnum -o outputfolder -p serial_port -s sensor_port'
 
 try:
-    opts, args = getopt.getopt(sys.argv[1:], "vdt:o:p:s:", ["visual", "dumping", "threadnum=", "outputfolder=", "port=", "sensor_port="])
+    opts, args = getopt.getopt(sys.argv[1:], "vdt:o:p:s:c:", ["visual", "dumping", "threadnum=", "outputfolder=", "port=", "sensor_port=", "camera=",])
 except getopt.GetoptError:
     print helptext
     sys.exit()
@@ -21,6 +21,7 @@ num_threads = 5
 outputfolder = 'data/'
 port = ''
 sensor_port = ''
+camera = 0
 
 for opt, arg in opts:
     if opt in ('-v', '--visual'):
@@ -35,6 +36,8 @@ for opt, arg in opts:
         port = arg.strip()
     elif opt in ('-s', '--sensor_port'):
         sensor_port = arg.strip()
+    elif opt in ('-c', '--camera'):
+        camera = int(arg)
 
 current_time = datetime.datetime.now()
 
@@ -93,6 +96,7 @@ if port:
             param['ann_output'],
             port,
             sensor_port,
+            camera,
             outputfolder=outputfolder,
             is_visual=is_visual,
             dump_to_files=is_dumping,
