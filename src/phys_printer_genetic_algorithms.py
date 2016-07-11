@@ -54,7 +54,8 @@ class PhysGenotype(AnnGenotype):
         print("evaluating...")
         self.population.controller.testHome()
         fitness = self.population.camera.eval()
-        return fitness * 100
+        time.sleep(5)
+        self.fitness = fitness * 100
 
     def get_velocity(self, instruction):
         """Basic translation from expected outputs from the neural network
@@ -78,9 +79,9 @@ class PhysGenotype(AnnGenotype):
 
         global kbdInput
         c = self.population.controller
-        #c.extrude()
         c.home()
         start_time = time.time()
+        c.extrude()
         while time.time() - start_time < self.population.printer_runtime:
             #if kbdInput == "q":
             #    c.pause()
