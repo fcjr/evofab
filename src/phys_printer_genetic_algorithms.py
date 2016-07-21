@@ -55,8 +55,8 @@ class PhysGenotype(AnnGenotype):
         print("evaluating...")
         self.population.controller.testHome()
         fitness = self.population.camera.eval()
-        time.sleep(2)
         self.fitness = fitness * 100
+        time.sleep(2)
         print "fitness:", self.fitness
         self.population.camera.showImage()
         self.population.conveyor.run()
@@ -87,6 +87,7 @@ class PhysGenotype(AnnGenotype):
         start_time = time.time()
         c.extrude()
         time.sleep(4)
+        init_photo_vals = self.population.sense.getNext()
         while time.time() - start_time < self.population.printer_runtime:
             #if kbdInput == "q":
             #    c.pause()
@@ -95,6 +96,8 @@ class PhysGenotype(AnnGenotype):
             #    sys.exit(0)
             #run the printer based on neural net responses
             photo_array_values = self.population.sense.getNext()
+            #normalize the photo array values and square them to amp up differences
+            photo_array_values = [(x - y) * (x - y) for x,y in zip(photo_array_values, init_photo_vals)]
             print photo_array_values
             time.sleep(0.4)
             result = self.ann.propagate(photo_array_values)
@@ -104,5 +107,6 @@ class PhysGenotype(AnnGenotype):
             command = self.get_velocity(result[:2]) + self.get_velocity(result[2:])
             result = c.changeVelocity(command)
         print time.time() - start_time, "seconds elapsed"
+        time.sleep(2)
         c.pause()
         return
