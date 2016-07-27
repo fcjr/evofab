@@ -2,6 +2,7 @@ from ann_genetic_algorithms import AnnGenotype, AnnPopulation
 from genetic_algorithms import Population
 from evocontroller.evoPyLib.evoPyLib import *
 from evocontroller.evoCamera.evoCamera import EvoCamera
+from visualizer import Visualizer
 import time
 import sys
 import threading
@@ -22,6 +23,7 @@ class PhysPopulation(AnnPopulation):
         self.controller = EvoController(serial_port)
         self.sense = EvoArray(sensor_serial_port)
         self.camera = EvoCamera(camera, crop)
+        self.visualizer = Visualizer([self.sense.getNext() for x in range(10))
         listener = threading.Thread(target=kbdListener)
         listener.start()
 
@@ -89,6 +91,7 @@ class PhysGenotype(AnnGenotype):
             #    sys.exit(0)
             #run the printer based on neural net responses
             photo_array_values = self.population.sense.getNext()
+            self.population.visualizer.update(photo_array_values)
             print photo_array_values
             result = self.ann.propagate(photo_array_values)
             result = [int(round(x)) for x in result]
