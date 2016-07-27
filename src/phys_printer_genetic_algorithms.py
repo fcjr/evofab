@@ -51,12 +51,15 @@ class PhysGenotype(AnnGenotype):
         the neural network, then does some CV work to determine
         the fitness of the member. Returns that fitness as a float
         """
-        phenotype = self.express()
+        moved = self.express()
         print("evaluating...")
         self.population.controller.testHome()
         fitness = self.population.camera.eval()
-        self.fitness = fitness * 100
-        time.sleep(2)
+        if not moved:
+            print "no motion instructions given by neural net."
+            self.fitness = 0
+        else:
+            self.fitness = fitness * 100
         print "fitness:", self.fitness
         self.population.camera.showImage()
         self.population.conveyor.run()
@@ -67,9 +70,9 @@ class PhysGenotype(AnnGenotype):
         """
 
         if instruction == "10":
-            return "+030"
+            return "+025"
         elif instruction == "01":
-            return "-030"
+            return "-025"
         else:
             return "+000"
 
@@ -78,7 +81,9 @@ class PhysGenotype(AnnGenotype):
         printer for an amount of time specified by the population's
         printer_runtime. After expression, instructs the printer to move
         the print bed to the "eval" location for evaluation.
-        No return value expected
+
+        Returns True if the neural network gave any nonzero "move" instructions to
+        the printer. False if all motion instructions were zero
         """
 
         global kbdInput
@@ -88,6 +93,7 @@ class PhysGenotype(AnnGenotype):
         c.extrude()
         time.sleep(4)
         init_photo_vals = self.population.sense.getNext()
+        has_moved = False
         while time.time() - start_time < self.population.printer_runtime:
             #if kbdInput == "q":
             #    c.pause()
@@ -104,9 +110,13 @@ class PhysGenotype(AnnGenotype):
             result = [int(round(x)) for x in result]
             result = ''.join(map(str, result))
             #result are floats returned by the neural network
-            command = self.get_velocity(result[:2]) + self.get_velocity(result[2:])
+            xvel = self.get_velocity(result[:2])
+            yvel = self.get_velocity(result[2:])
+            command = xvel + yvel
             result = c.changeVelocity(command)
+            if command != "+000+000":
+                has_moved = True
         print time.time() - start_time, "seconds elapsed"
-        time.sleep(2)
+        time.sleep(4)
         c.pause()
-        return
+        return has_moved
