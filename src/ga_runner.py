@@ -10,7 +10,7 @@ import errno
 helptext = 'ga_runner.py -v -d -t threadnum -o outputfolder -p serial_port -s sensor_port'
 
 try:
-    opts, args = getopt.getopt(sys.argv[1:], "vdt:o:p:s:c:", ["visual", "dumping", "threadnum=", "outputfolder=", "port=", "sensor_port=", "camera=",])
+    opts, args = getopt.getopt(sys.argv[1:], "vdt:o:p:s:k:c:", ["visual", "dumping", "threadnum=", "outputfolder=", "port=", "sensor_port=", "conveyor_port=", "camera=",])
 except getopt.GetoptError:
     print helptext
     sys.exit()
@@ -21,6 +21,7 @@ num_threads = 5
 outputfolder = 'data/'
 port = ''
 sensor_port = ''
+conveyor_port = ''
 camera = 0
 
 for opt, arg in opts:
@@ -36,6 +37,8 @@ for opt, arg in opts:
         port = arg.strip()
     elif opt in ('-s', '--sensor_port'):
         sensor_port = arg.strip()
+    elif opt in ('-k', '--conveyor_port'):
+        conveyor_port = arg.strip()
     elif opt in ('-c', '--camera'):
         camera = int(arg)
 
@@ -47,14 +50,14 @@ param = {
         'mutation_range' : (-15, 15),
         'cull_num' : 6,
         'ann_input' : 9,
-        'ann_hidden' : 16,
+        'ann_hidden' : 26,
         'ann_output' : 4,
         'cell_scale' : 30,
         'inputs' : ['worlds/v.test', 'worlds/squiggle1.test'],
         'random_seed' : int(current_time.strftime('%s')),
         'time' : current_time,
         'num_gens' : 8000,
-        'printer_runtime' : 10,
+        'printer_runtime' : 20,
         'units_per_cell' : 10,
         'reward_for_correct' : 20,
         'punishment_for_incorrect': 1,
@@ -96,6 +99,7 @@ if port:
             param['ann_output'],
             port,
             sensor_port,
+            conveyor_port,
             camera,
             outputfolder=outputfolder,
             is_visual=is_visual,
