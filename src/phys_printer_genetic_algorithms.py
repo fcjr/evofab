@@ -23,8 +23,9 @@ class PhysPopulation(AnnPopulation):
         self.controller = EvoController(serial_port)
         self.sense = EvoArray(sensor_serial_port)
         self.camera = EvoCamera(camera, crop)
-        self.visualizer = Visualizer([self.sense.getNext() for x in range(10))
         self.conveyor = EvoConveyor(conveyor_port)
+        self.visualizer = Visualizer([self.sense.getNext() for x in range(10)])
+        self.visualizer.update(self.sense.getNext())
         listener = threading.Thread(target=kbdListener)
         listener.start()
 
@@ -99,9 +100,8 @@ class PhysGenotype(AnnGenotype):
             #run the printer based on neural net responses
             #normalize the photo array values and square them to amp up differences
             photo_array_values = self.population.sense.getNext()
-            self.population.visualizer.update(photo_array_values)
             photo_array_values = [(x - y) * (x - y) for x,y in zip(photo_array_values, init_photo_vals)]
-            print photo_array_values
+            #print photo_array_values
             time.sleep(0.4)
             result = self.ann.propagate(photo_array_values)
             result = [int(round(x)) for x in result]
@@ -109,6 +109,7 @@ class PhysGenotype(AnnGenotype):
             #result are floats returned by the neural network
             command = self.get_velocity(result[:2]) + self.get_velocity(result[2:])
             result = c.changeVelocity(command)
+            self.population.visualizer.update(photo_array_values, command)
         print time.time() - start_time, "seconds elapsed"
         time.sleep(2)
         c.pause()
