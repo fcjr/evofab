@@ -2,6 +2,7 @@ from ann_genetic_algorithms import AnnGenotype, AnnPopulation
 from genetic_algorithms import Population
 from evocontroller.evoPyLib.evoPyLib import *
 from evocontroller.evoCamera.evoCamera import EvoCamera
+from visualizer import Visualizer
 import time
 import sys
 import threading
@@ -23,6 +24,8 @@ class PhysPopulation(AnnPopulation):
         self.sense = EvoArray(sensor_serial_port)
         self.camera = EvoCamera(camera, crop)
         self.conveyor = EvoConveyor(conveyor_port)
+        self.visualizer = Visualizer([self.sense.getNext() for x in range(10)])
+        self.visualizer.update(self.sense.getNext())
         listener = threading.Thread(target=kbdListener)
         listener.start()
 
@@ -101,10 +104,10 @@ class PhysGenotype(AnnGenotype):
             #    c.close()
             #    sys.exit(0)
             #run the printer based on neural net responses
-            photo_array_values = self.population.sense.getNext()
             #normalize the photo array values and square them to amp up differences
+            photo_array_values = self.population.sense.getNext()
             photo_array_values = [(x - y) * (x - y) for x,y in zip(photo_array_values, init_photo_vals)]
-            print photo_array_values
+            #print photo_array_values
             time.sleep(0.4)
             result = self.ann.propagate(photo_array_values)
             result = [int(round(x)) for x in result]
@@ -116,6 +119,7 @@ class PhysGenotype(AnnGenotype):
             result = c.changeVelocity(command)
             if command != "+000+000":
                 has_moved = True
+            self.population.visualizer.update(photo_array_values, command)
         print time.time() - start_time, "seconds elapsed"
         time.sleep(4)
         c.pause()
