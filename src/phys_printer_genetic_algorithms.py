@@ -16,7 +16,7 @@ class PhysPopulation(AnnPopulation):
     execution of the GA within members
     """
 
-    def __init__(self, random_seed, printer_runtime, size, mutation_rate, mutation_range, crossover_rate, replacement_number, num_input, num_hidden, num_output, serial_port, sensor_serial_port, conveyor_port, camera, outputfolder, crop=True, is_visual=True, dump_to_files=False):
+    def __init__(self, random_seed, printer_runtime, size, mutation_rate, mutation_range, crossover_rate, replacement_number, num_input, num_hidden, num_output, serial_port, sensor_serial_port, conveyor_port, z_port, camera, outputfolder, crop=True, is_visual=True, dump_to_files=False):
         super(PhysPopulation, self).__init__(random_seed, printer_runtime, size, mutation_rate, mutation_range, crossover_rate, replacement_number, num_input, num_hidden, num_output, outputfolder, is_visual=is_visual, dump_to_files=dump_to_files)
         self.genotype_factory = PhysGenotypeFactory(self)
         #TODO: should probably test that sensor and controller serial ports are valid
@@ -26,6 +26,7 @@ class PhysPopulation(AnnPopulation):
         self.conveyor = EvoConveyor(conveyor_port)
         self.visualizer = Visualizer([self.sense.getNext() for x in range(10)])
         self.visualizer.update(self.sense.getNext())
+        self.z_axis = EvoZAxis(z_port)
         listener = threading.Thread(target=kbdListener)
         listener.start()
 
@@ -56,6 +57,7 @@ class PhysGenotype(AnnGenotype):
         """
         moved = self.express()
         print("evaluating...")
+        self.population.z_axis.up()
         self.population.controller.testHome()
         fitness = self.population.camera.eval()
         if not moved:
@@ -73,9 +75,9 @@ class PhysGenotype(AnnGenotype):
         """
 
         if instruction == "10":
-            return "+025"
+            return "+018"
         elif instruction == "01":
-            return "-025"
+            return "-018"
         else:
             return "+000"
 
@@ -92,9 +94,10 @@ class PhysGenotype(AnnGenotype):
         global kbdInput
         c = self.population.controller
         c.home()
+        self.population.z_axis.down()
         start_time = time.time()
         c.extrude()
-        time.sleep(4)
+        time.sleep(6)
         init_photo_vals = self.population.sense.getNext()
         has_moved = False
         while time.time() - start_time < self.population.printer_runtime:
@@ -121,6 +124,6 @@ class PhysGenotype(AnnGenotype):
                 has_moved = True
             self.population.visualizer.update(photo_array_values, command)
         print time.time() - start_time, "seconds elapsed"
-        time.sleep(4)
+        time.sleep(6)
         c.pause()
         return has_moved
