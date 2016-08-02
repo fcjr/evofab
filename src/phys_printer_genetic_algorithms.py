@@ -75,9 +75,9 @@ class PhysGenotype(AnnGenotype):
         """
 
         if instruction == "10":
-            return "+018"
+            return "+025"
         elif instruction == "01":
-            return "-018"
+            return "-025"
         else:
             return "+000"
 
@@ -125,5 +125,6 @@ class PhysGenotype(AnnGenotype):
             self.population.visualizer.update(photo_array_values, command)
         print time.time() - start_time, "seconds elapsed"
         time.sleep(6)
+        c.disable()
         c.pause()
         return has_moved
