@@ -7,21 +7,19 @@ class Hat(object):
 
     def __init__(self, population):
         self.population = population
-        self.ranges = []
-        self.ranges.append(population[0].fitness)
-        for member in population[1:]:
-            self.ranges.append(self.ranges[-1] + member.fitness)
+        self.weights = [x.fitness for x in population]
+        pop_min = min(self.weights)
+        self.weights = [x + (-1*pop_min) for x in self.weights]
+        self.weight_sum = 0
+        for w in self.weights:
+            self.weight_sum += w
 
     def pull(self):
-        choice = random.randint(0, len(self.ranges) -1)
-        i = 0
-        while (choice - self.ranges[i]) >= 0:
-            choice -= self.ranges[i]
-            i += 1
-        return self.population[i]
-
-    def size(self):
-        return sum(self.ranges)
+        value = random.uniform(0, self.weight_sum)
+        for i,w in enumerate(self.weights):
+            value -= w
+            if value <= 0:
+                return self.population[i]
 
 class GenericGenotypeFactory(object):
     def __init__(self, population):

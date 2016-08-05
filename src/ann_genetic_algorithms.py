@@ -12,7 +12,7 @@ statsfile_filename = 'stats.csv'
 
 class AnnPopulation(Population):
 
-    def __init__(self, random_seed, printer_runtime, size, mutation_rate, mutation_range, crossover_rate, replacement_number, num_input, num_hidden, num_output, outputfolder, reward_for_correct=None, punishment_for_incorrect=None, goal=None, is_visual=True, dump_to_files=False, units_per_cell=0):
+    def __init__(self, random_seed, printer_runtime, size, mutation_rate, mutation_range, crossover_rate, replacement_number, num_input, num_hidden, num_output, outputfolder, reward_for_correct=None, punishment_for_incorrect=None, goal=None, is_visual=True, dump_to_files=False, units_per_cell=0, recur = 0, time = 1):
         super(AnnPopulation, self).__init__(random_seed, size, mutation_rate, mutation_range, crossover_rate, replacement_number, num_input, num_hidden, num_output, outputfolder)
         self.goal = goal
         self.printer_runtime = printer_runtime
@@ -21,7 +21,7 @@ class AnnPopulation(Population):
         self.punishment_for_incorrect = punishment_for_incorrect
         self.is_visual = is_visual
         self.dump_to_files = dump_to_files
-        self.genotype_factory = AnnGenotypeFactory(self)
+        self.genotype_factory = AnnGenotypeFactory(self, recur, time)
         self.init_csv_writer()
 
     def init_csv_writer(self):
@@ -49,27 +49,34 @@ class AnnPopulation(Population):
             ann_io.save(member.ann, self.outputfolder + curbest_filename)
 
 class AnnGenotypeFactory(object):
-    def __init__(self, population):
+    def __init__(self, population, recur, time):
         self.pop = population
+        self.recur = recur
+        self.time = time
 
     def new(self):
-        return AnnGenotype(self.pop)
+        return AnnGenotype(self.pop, self.recur, self.time)
 
 class AnnGenotype(Genotype):
 
-    def __init__(self, population):
+    def __init__(self, population, recur, time):
+        if recur == 1:
+            self.ann = Network(population.num_input, population.num_hidden, population.num_output, out_to_in = True, time = time)
+        elif recur == 2:
+            self.ann = Network(population.num_input, population.num_hidden, population.num_output, in_to_in = True, time = time)
+        elif recur == 3:
+            self.ann = Network(population.num_input, population.num_hidden, population.num_output, out_to_in = True, in_to_in = True, time = time)
         self.population = population
-        self.ann = Network(population.num_input, population.num_hidden, population.num_output)
         size = len(self.ann.allConnections)
         super(AnnGenotype, self).__init__(population, size)
 
     def mutate(self):
         rate = self.population.mutation_rate * 100
+        lower, upper = self.population.mutation_range
         for i in range(len(self.values)):
-            rand_num = random.randint(0, 99)
+            rand_num = random.uniform(-100, 100)
             if rand_num < rate:
-                lower, upper = self.population.mutation_range
-                self.values[i] = random.uniform(lower, upper)
+                self.values[i] += random.uniform(lower, upper)
 
     def calculate_fitness(self, q=None):
         phenotype = self.express()

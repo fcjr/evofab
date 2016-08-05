@@ -48,23 +48,25 @@ for opt, arg in opts:
 current_time = datetime.datetime.now()
 
 param = {
-        'pop_size' : 10,
-        'mutation_rate' : 0.1,
-        'mutation_range' : (-15, 15),
-        'cull_num' : 6,
+        'pop_size' : 80,
+        'mutation_rate' : 0.15,
+        'mutation_range' : (-30, 30),
+        'cull_num' : 56,
         'ann_input' : 9,
         'ann_hidden' : 26,
         'ann_output' : 4,
         'cell_scale' : 30,
-        'inputs' : ['worlds/v.test', 'worlds/squiggle1.test'],
+        'inputs' : ['worlds/v_big.test'],
         'random_seed' : int(current_time.strftime('%s')),
         'time' : current_time,
         'num_gens' : 8000,
-        'printer_runtime' : 20,
+        'printer_runtime' : 500,
         'units_per_cell' : 10,
-        'reward_for_correct' : 20,
-        'punishment_for_incorrect': 1,
-        'crossover_rate': .3
+        'reward_for_correct' : 100,
+        'punishment_for_incorrect': 30,
+        'crossover_rate': .5,
+        'recur_mode': 3,
+        'time_to_recur': 2
         }
 
 if is_dumping:
@@ -128,5 +130,6 @@ else:
             is_visual=is_visual,
             dump_to_files=is_dumping,
             units_per_cell=param['units_per_cell'],
+            recur = param['recur_mode'],
             )
 population.iterate(param['num_gens'], num_threads)

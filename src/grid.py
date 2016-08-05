@@ -34,7 +34,7 @@ class Grid:
                 for char in line.strip():
                     if char == 'S':
                         self.starting_point = (x, y)
-                        grid[-1].append(1)
+                        grid[-1].append(0)
                     else:
                         grid[-1].append(int(char))
                     x += 1

@@ -68,12 +68,27 @@ class Network:
     """
     A Network object represents a three-layer feedforward network with
     a given number of input, hidden, and output units.
+
+    mode:
+        1: feedforward network with no recurrance
     """
-    def __init__(self, numInputs, numHiddens, numOutputs):
+    def __init__(self, numInputs, numHiddens, numOutputs, out_to_in=False, in_to_in=False, time=1):
         # create the units
+        #stuff for recurrent networks
+        self.time = time
+        self.prev_outputs = [[0 for k in range(numOutputs)]] * time
+        self.prev_inputs = [[0 for k in range(numOutputs)]] * time
+        self.out_to_in = out_to_in
+        self.in_to_in = in_to_in
+        total_inputs = numInputs
+        if out_to_in:
+            total_inputs += numOutputs
+        if in_to_in:
+            total_inputs += numInputs
+        self.inputLayer = [Unit() for k in range(total_inputs)]
+
         self.outputLayer = [Unit() for i in range(numOutputs)]
         self.hiddenLayer = [Unit() for j in range(numHiddens)]
-        self.inputLayer = [Unit() for k in range(numInputs)]
         # wire up the network
         self.allConnections = []
         self.connectLayers(self.inputLayer, self.hiddenLayer)
@@ -127,6 +142,12 @@ class Network:
         It ensures that given pattern is the appropriate length and
         that the values are in the range 0-1. 
         """
+        original_pattern = pattern
+        for n in range(self.time):
+            if self.in_to_in:
+                pattern += self.prev_inputs[n]
+            if self.out_to_in:
+                pattern += self.prev_outputs[n]
         for (inputUnit, value) in zip(self.inputLayer, pattern):
             #assert 0 <= value <= 1, 'invalid pattern value %g' % value
             inputUnit.activation = value
@@ -134,7 +155,14 @@ class Network:
             hiddenUnit.update()
         for outputUnit in self.outputLayer:
             outputUnit.update()
-        return [outputUnit.activation for outputUnit in self.outputLayer]
+        if self.in_to_in:
+            self.prev_inputs = self.prev_inputs[1:]
+            self.prev_inputs.append(original_pattern)
+        to_return = [outputUnit.activation for outputUnit in self.outputLayer]
+        if self.out_to_in:
+            self.prev_outputs = self.prev_outputs[1:]
+            self.prev_outputs.append(to_return)
+        return to_return
 
     def computeError(self):
         """
