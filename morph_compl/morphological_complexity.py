@@ -70,9 +70,12 @@ def calculate_perimeter(image):
     ##################
     e = 0
     for p in PDF:
-        e += p * log(p, 10)
+        if p > 0:
+            e += p * log(p, 10)
     e = -e
-    print e
+    print
+    print
+    print "entropy", e
     #end
 
     color_interval = 255/len(cnts[0])
