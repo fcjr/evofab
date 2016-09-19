@@ -1,4 +1,7 @@
 import cv2
+from itertools import islice
+from math import *
+
 def calculate_perimeter(image):
     #copy the image as to not destroy it
     #image = image.copy()
@@ -27,11 +30,28 @@ def calculate_perimeter(image):
 
     #downsample perimeter and draw on image
     cnts[0] = cnts[0][::10]
-    for point in cnts[0]:
-        cv2.circle(image, (point[0][0], point[0][1]), 6, (0, 255, 0), -1)
+    
+
+    #calculate turning angle
+    pts = cnts[0][:]
+    pts = [tuple(x[0]) for x in pts]
+    for n in range(len(pts)-1):
+        cv2.line(image, pts[n], pts[n+1], (0, 0, 0), 2, -1)
+    for n,pt in islice(enumerate(pts), 0, None, 2):
+        a1, a2 = [a - b for a,b in zip(pts[n], pts[n-1])]
+        b1, b2 = [a - b for a,b in zip(pts[n+1], pts[n])]
+        dot = a1*b1 + a2*b2
+        angle = acos(round(dot/(sqrt(a1*a1 + a2*a2) * sqrt(b1*b1 + b2*b2)), 10))
+        angle = angle * 180/pi
+        print n/2, "&", angle
+    #end
+
+    color_interval = 255/len(cnts[0])
+    for n,point in enumerate(cnts[0]):
+        cv2.circle(image, (point[0][0], point[0][1]), 6, (0, 255-n*color_interval, 0), -1)
     cv2.imshow("EvoFab Evaluation", image)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
 if __name__ == "__main__":
-    calculate_perimeter(cv2.imread("input.png"))
+    calculate_perimeter(cv2.imread("morph_compl/input.png"))
