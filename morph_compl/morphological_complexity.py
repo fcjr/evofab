@@ -43,6 +43,7 @@ def calculate_perimeter(image):
         b1, b2 = [a - b for a,b in zip(pts[n+1], pts[n])]
         dot = a1*b1 + a2*b2
         angle = acos(round(dot/(sqrt(a1*a1 + a2*a2) * sqrt(b1*b1 + b2*b2)), 10))
+        angle = angle * 180/pi
         angles.append(angle)
         #print n/2, "&", angle
     #bin_width = (max(angles) - min(angles))/10.0
