@@ -1,6 +1,7 @@
 import cv2
 from itertools import islice
 from math import *
+from sys import argv
 
 def calculate_perimeter(image):
     #copy the image as to not destroy it
@@ -30,7 +31,8 @@ def calculate_perimeter(image):
 
     #downsample perimeter and draw on image
     cnts[0] = cnts[0][::10]
-    
+    if len(cnts[0]) % 2 != 0:
+        cnts[0] = cnts[0][:-1]
 
     #calculate turning angle
     pts = cnts[0][:]
@@ -86,4 +88,4 @@ def calculate_perimeter(image):
     cv2.destroyAllWindows()
 
 if __name__ == "__main__":
-    calculate_perimeter(cv2.imread("morph_compl/input.png"))
+    calculate_perimeter(cv2.imread(argv[1]))
