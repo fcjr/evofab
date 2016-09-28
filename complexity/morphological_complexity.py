@@ -1,9 +1,11 @@
 import cv2
-from itertools import islice
+import itertools
 from math import *
 from sys import argv
+import zlib
 
-def calculate_perimeter(image):
+
+def morphological_complexity(image):
     #copy the image as to not destroy it
     #image = image.copy()
 
@@ -40,7 +42,7 @@ def calculate_perimeter(image):
     for n in range(len(pts)-1):
         cv2.line(image, pts[n], pts[n+1], (0, 0, 0), 2, -1)
     angles = []
-    for n,pt in islice(enumerate(pts), 0, None, 2):
+    for n,pt in itertools.islice(enumerate(pts), 0, None, 2):
         a1, a2 = [a - b for a,b in zip(pts[n], pts[n-1])]
         b1, b2 = [a - b for a,b in zip(pts[n+1], pts[n])]
         dot = a1*b1 + a2*b2
@@ -87,5 +89,18 @@ def calculate_perimeter(image):
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
+def compression_measure(image):
+    #naive string compression
+    flattened = list(itertools.chain.from_iterable(image))
+    new = []
+    for i in flattened:
+        new += list(i)
+    str_new = ""
+    for i in new:
+        str_new += str(i) + " "
+    print "compressed_size", len(zlib.compress(str_new))
+    
+
 if __name__ == "__main__":
-    calculate_perimeter(cv2.imread(argv[1]))
+    #morphological_complexity(cv2.imread(argv[1]))
+    compression_measure(cv2.imread(argv[1]))
