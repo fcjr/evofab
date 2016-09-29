@@ -66,6 +66,8 @@ class AnnGenotype(Genotype):
             self.ann = Network(population.num_input, population.num_hidden, population.num_output, in_to_in = True, time = time)
         elif recur == 3:
             self.ann = Network(population.num_input, population.num_hidden, population.num_output, out_to_in = True, in_to_in = True, time = time)
+        else:
+            self.ann = Network(population.num_input, population.num_hidden, population.num_output, out_to_in = False, in_to_in = False, time = 0)
         self.population = population
         size = len(self.ann.allConnections)
         super(AnnGenotype, self).__init__(population, size)
