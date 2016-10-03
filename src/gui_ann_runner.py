@@ -15,7 +15,7 @@ class GuiAnnRunner(AnnRunner):
     def __init__(self, ideal_grid, units_per_cell=10):
         self.gridworld = GuiGridWorld(ideal_grid.width, ideal_grid.height, ideal_grid.gridsize)
         self.gridworld.set_ideal_grid(ideal_grid)
-        self.printer = GuiPrinter(10, 10, 9, 1, self.gridworld, units_per_cell)
+        self.printer = GuiPrinter(10, 10, 9, self.gridworld, units_per_cell)
         self.camera = GuiCamera(self.gridworld.grid, self.printer, camera_size)
         self.ideal_camera = GuiCamera(self.gridworld.ideal_grid, self.printer, camera_size) #TODO: this might break -- might need a gridworld not a grid
         self.ideal_grid = self.gridworld.ideal_grid
