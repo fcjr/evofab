@@ -20,6 +20,13 @@ class Printer(object):
         self.grid = grid
         self.penDown = False
 
+    def set_printer_direction(self, leftright, updown):
+        """Set the direction the printer will move in on the following time steps.
+
+        leftright: -1 = left motion, 0 = no leftright motion, 1 = right motion
+        updown: -1 = down motion, 0 = no updown motion, 1 = up motion"""
+        self.v = Vector(leftright, updown)
+
     def set_position_on_grid(self, xcell, ycell):
         """ Move the printer to the specified cell position on the grid"""
         self.position = Vector((xcell * self.grid.gridsize()) + self.grid.gridsize()/2, (ycell * self.grid.gridsize())+ self.grid.gridsize()/2)
