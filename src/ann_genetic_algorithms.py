@@ -12,11 +12,12 @@ statsfile_filename = 'stats.csv'
 
 class AnnPopulation(Population):
 
-    def __init__(self, random_seed, printer_runtime, size, mutation_rate, mutation_range, crossover_rate, replacement_number, num_input, num_hidden, num_output, outputfolder, reward_for_correct=None, punishment_for_incorrect=None, goal=None, is_visual=True, dump_to_files=False, units_per_cell=0):
+    def __init__(self, random_seed, printer_runtime, size, mutation_rate, mutation_range, crossover_rate, replacement_number, num_input, num_hidden, num_output, outputfolder, reward_for_correct=None, punishment_for_incorrect=None, goal=None, is_visual=True, dump_to_files=False, cell_size=0, units_per_cell=0):
         super(AnnPopulation, self).__init__(random_seed, size, mutation_rate, mutation_range, crossover_rate, replacement_number, num_input, num_hidden, num_output, outputfolder)
         self.goal = goal
         self.printer_runtime = printer_runtime
         self.units_per_cell = units_per_cell
+        self.cell_size = cell_size
         self.reward_for_correct = reward_for_correct
         self.punishment_for_incorrect = punishment_for_incorrect
         self.is_visual = is_visual
@@ -92,9 +93,9 @@ class AnnGenotype(Genotype):
         for world in self.population.goal:
             if self.population.is_visual:
                 from gui_ann_runner import GuiAnnRunner
-                runner = GuiAnnRunner(world, self.population.units_per_cell)
+                runner = GuiAnnRunner(world, self.population.cell_size, self.population.units_per_cell)
             else:
-                runner = AnnRunner(world, self.population.units_per_cell)
+                runner = AnnRunner(world, self.population.cell_size, self.population.units_per_cell)
             ideal_grid, actual_grid = runner.run(self.ann, iterations=self.population.printer_runtime)
             result.append((ideal_grid.grid, actual_grid.grid))
         return result

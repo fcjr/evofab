@@ -16,6 +16,12 @@ class GridWorld(object):
         """Set the ideal grid for the GridWorld. Allows a user to keep track of the ideal and actual gridworld and query for the difference between them"""
         self.ideal_grid = grid
 
+    def get_starting_position(self):
+        if self.ideal_grid.starting_point:
+            return self.ideal_grid.starting_point
+        else:
+            assert(1 == 2) #no ideal grid defined. an ideal grid can be defined for the gridworld with set_ideal_grid
+
     def inbounds(self,p):
         """Checks if the given pixel coordinates are in bounds for the gridworld"""
         return self.grid.inbounds(p)
