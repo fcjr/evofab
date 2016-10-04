@@ -126,9 +126,10 @@ else:
             outputfolder=outputfolder,
             reward_for_correct=param['reward_for_correct'],
             punishment_for_incorrect=param['punishment_for_incorrect'],
-            goal=[Grid(scale=param['cell_scale'], path=val) for val in param['inputs']],
+            goal=param['inputs'],
             is_visual=is_visual,
             dump_to_files=is_dumping,
+            cell_size = param['cell_scale'],
             units_per_cell=param['units_per_cell'],
             recur = param['recur_mode'],
             )

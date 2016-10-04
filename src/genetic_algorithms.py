@@ -4,6 +4,7 @@ import random
 from multiprocessing import Process, Queue
 
 class Hat(object):
+    """A hat that is used to select members for fitness-proportional breeding. Members with higher fitness will be pulled from the hat more often"""
 
     def __init__(self, population):
         self.population = population
@@ -15,6 +16,7 @@ class Hat(object):
             self.weight_sum += w
 
     def pull(self):
+        """Pull a member of the population from the hat. Members with higher fitness will be more likely to be picked"""
         value = random.uniform(0, self.weight_sum)
         for i,w in enumerate(self.weights):
             value -= w
@@ -22,6 +24,7 @@ class Hat(object):
                 return self.population[i]
 
 class GenericGenotypeFactory(object):
+    """A superclass for GenotypeFactory(ies)"""
     def __init__(self, population):
         self.pop = population
 
@@ -30,8 +33,20 @@ class GenericGenotypeFactory(object):
 
 
 class Population(object):
+    """ A ``population'' on which to perform optimization through evolution"""
 
-    def __init__(self, random_seed, size, mutation_rate, mutation_range, crossover_rate, replacement_number, num_input, num_hidden, num_output, outputfolder):
+    def __init__(self, random_seed, size, mutation_rate, mutation_range, crossover_rate, replacement_number, outputfolder):
+        """Constructs a population on which to perform evolution to optimize to the defined fitness function
+
+        random_seed: the random seed for the stochastic components of the system. Needs to be specified so that we have repeatable experiments
+        size: the size of the population
+        mutation_rate: the likelyhood of a component of a genotype being randomly changed during mutation (evaluated for each individual component of the encoding
+        mutation_range: the range of values for mutation
+        crossover_rate: the probability that a new member of the population will be created using crossover (breeding) instead of randomly mutated from a fitness-proportionally-selected parent
+        replacement_number: the number of members of the population to cull after fitness ranking. must be even because crossover yields two children
+        outputfolder: relative path to the folder where results shouldbe output to
+        """
+
         random.seed(random_seed)
         self.genotype_factory = GenericGenotypeFactory(self)
         self.outputfolder = outputfolder
@@ -40,12 +55,11 @@ class Population(object):
         self.replacement_number = replacement_number
         self.mutation_rate = mutation_rate
         self.mutation_range = mutation_range
-        self.num_input = num_input
-        self.num_hidden = num_hidden
-        self.num_output = num_output
         self.members = []
 
     def create_initial_population(self):
+        """Randomly generate the population"""
+
         for i in range(self.size):
             new_member = self.genotype_factory.new()
             new_member.randomize()
@@ -55,6 +69,8 @@ class Population(object):
         return
 
     def iterate(self, num_iterations=10, threadnum=5):
+        """iterate on the process of evolution, etc"""
+
         self.create_initial_population()
         print "evaluating initial population"
         self.eval_fitness(self.members, threadnum)
@@ -78,6 +94,7 @@ class Population(object):
         return
 
     def eval_fitness(self, members, threadnum):
+        """Evaluate the fitness of all of the members of the population"""
         q = Queue()
         counter = 0
         for num, m in enumerate(members):
@@ -108,6 +125,8 @@ class Population(object):
         #     counter += threadnum
 
     def cull(self):
+        """cull the *replacement_number* lowest-ranked members of the population"""
+
         self.sort_by_fitness()
         self.members = self.members[self.replacement_number:] #cull the population
 
@@ -119,6 +138,9 @@ class Population(object):
         return pick < (self.crossover_rate * 100)
 
     def breed(self):
+        """(this is a bad name for this) do both breeding and crossover (split based on crossover_rate) to replace the culled members of the population.
+        """
+
         assert(self.replacement_number % 2 == 0)
         hat = Hat(self.members)
         children = []
@@ -167,6 +189,8 @@ class Genotype(object):
         self.fitness = None
 
     def crossover(self, p1, p2):
+        """Describes crossover for a Genotype that is encoded as a list of values. Does two point crossover for two members of the population. Does kind of a bad job probably(?)"""
+
         location1 = random.randint(0, len(self.values))
         location2 = random.randint(0, len(self.values))
         while location2 == location1:
@@ -175,4 +199,5 @@ class Genotype(object):
         self.values = p1.values[:location1] + p2.values[location1:location2] + p1.values[location2:]
 
     def randomize(self):
+        """Randomize this member of the population"""
         self.values = [ random.randrange(-10, 10) for x in self.values]
