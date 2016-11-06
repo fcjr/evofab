@@ -5,7 +5,7 @@ from grid import Grid
 
 class GridWorld(object):
     """Describes a GridWorld (the build-plate-world that the printer exists in.
-    
+
     A gridworld can function as simply a drawing canvas. We can also set an ``ideal_grid'', which is an aditional Grid object (often constructed from a given gridfile path) which specifies a ``goal'' for the world (whatever that means for the particular implemention)."""
 
     def __init__(self,wid,hi,scale):
@@ -41,18 +41,22 @@ class GridWorld(object):
         myx,myy = self.grid.find_closest_gridloc(p)
         self.grid.set_loc_val(myx, myy, 1)
 
+    def find_closest_gridloc(self,p):
+        """takes in a location in pixel space and returns the coordinates in grid space"""
+        return self.grid.find_closest_gridloc(p)
+
     #shouldn't need these for now -- might be useful later?
     def distance(self,startp,endp):
             (endx,endy) = endp
             (startx,starty) = startp
             return math.sqrt(pow(endx - startx,2) + pow(endy - starty,2))
-                              
+
     def manhattan(self,startp,endp):
             (endx,endy) = endp
             (startx,starty) = startp
             '''given two points, return manhattan distance of two points'''
             return (abs(endx - startx) + abs(endy - starty))
-    
+
     def estimate_distance(self,start,end):
              #return self.manhattan(start,end)
              return self.distance(start,end)

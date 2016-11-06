@@ -12,12 +12,14 @@ class Printer(object):
         grid: the gridworld that the printer can act upon
         sub_cell_resolution: the factor by which cell width is divided by to determine the distance moved by the printer in a single time unit
         """
-
-        self.position = Vector(float(x), float(y))
+        self.grid = grid
+        if grid.ideal_grid:
+            self.position = Vector(*self.grid.get_starting_position())
+        else:
+            self.position = Vector(float(x), float(y))
         self.r = r
         move_unit_pixels = grid.gridsize() / sub_cell_resolution
         self.v = Vector(move_unit_pixels, move_unit_pixels)
-        self.grid = grid
         self.penDown = False
 
     def set_printer_direction(self, leftright, updown):
@@ -33,7 +35,7 @@ class Printer(object):
 
     def setPenUp(self):
         self.penDown = False
-        
+
     def setPenDown(self):
         self.penDown = True
 
