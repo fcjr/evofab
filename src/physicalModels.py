@@ -12,6 +12,9 @@ class PhysicalPrinter(Printer):
         self.STOP = "+000+000"
         self.velocity = "+000+000"
 
+    def close(self):
+        self.e.close()
+
     def setPenUp(self):
         self.e.pause()
 
@@ -20,7 +23,7 @@ class PhysicalPrinter(Printer):
 
     def simulate(self):
         self.e.changeVelocity(self.velocity)
-        time.sleep(time_interval)
+        time.sleep(self.time_interval)
         self.e.changeVelocity(self.STOP)
 
     def set_printer_direction(self, leftright, updown):
@@ -44,6 +47,7 @@ class PhysicalPrinter(Printer):
 
 
         self.velocity = x+y
+        print self.velocity
 
     def set_position_on_grid(self, xcell, ycell):
         """ Move the printer to the specified cell position on the grid"""
@@ -56,7 +60,7 @@ class PhysicalPrinter(Printer):
 
 
 class PhysicalCamera(Camera):
-        def __init__(port):
+        def __init__(self,port):
             self.port = port
             self.e = EvoCamera(port)
 
